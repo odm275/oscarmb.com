@@ -57,15 +57,7 @@ export default function ChatMessages({
           </p>
           {onPromptClick && <ChatPrompts onPromptClick={onPromptClick} />}
           <p className="text-center text-xs text-muted-foreground">
-            Powered by{" "}
-            <a
-              href="https://github.com/tedawf/tacos"
-              className="underline underline-offset-2 hover:text-primary"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              TACOS
-            </a>
+            Powered by AI
           </p>
         </div>
       )}

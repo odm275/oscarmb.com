@@ -1,20 +1,20 @@
 {
   "introduction": {
-    "greeting": "hi ted here. 👋",
-    "description": "Backend by trade, full-stack by passion. I build and self-host the lot.",
-    "chatPrompt": "For Q&A, start a chat with Ted Support",
+    "greeting": "Hey, Oscar here. 👋",
+    "description": "Crafting web solutions from scratch to production at your service.",
+    "chatPrompt": "For Q&A, start a chat with Oscar AI",
     "escalation": {
-      "text": "For escalations, please find my",
-      "linkText": "Ted Lead",
-      "suffix": "instead."
+      "text": "Want to connect? Find me on",
+      "linkText": "LinkedIn",
+      "suffix": "or reach out directly."
     }
   },
   "escalationLink": {
-    "href": "https://www.instagram.com/gomugomu.cat",
-    "title": "meow"
+    "href": "https://linkedin.com/in/oscarmejiabautista",
+    "title": "Connect on LinkedIn"
   },
   "metadata": {
-    "lastUpdated": "2025-10-18",
+    "lastUpdated": "2025-12-26",
     "version": "1.0.0"
   }
 }

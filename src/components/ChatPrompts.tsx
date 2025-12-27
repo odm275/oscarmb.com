@@ -6,14 +6,14 @@ interface ChatPromptsProps {
 }
 
 const allPrompts = [
-  "Tell me about Ted's experience",
-  "What projects has Ted worked on?",
-  "What technologies does Ted use?",
-  "How can I contact Ted?",
-  "What's Ted's educational background?",
-  "What is Ted's current role?",
-  "Tell me about Ted's skills",
-  "What companies has Ted worked at?",
+  "Tell me about Oscar's experience",
+  "What projects has Oscar worked on?",
+  "What technologies does Oscar use?",
+  "How can I contact Oscar?",
+  "What is Oscar's current role?",
+  "Tell me about Oscar's skills",
+  "What companies has Oscar worked at?",
+  "What's Oscar's tech stack?",
 ];
 
 function getRandomPrompts(prompts: string[], count: number): string[] {

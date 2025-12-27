@@ -33,15 +33,15 @@
     {
       "path": "/resume.pdf",
       "name": "resume",
-      "description": "Ted's resume CV in pdf format",
+      "description": "Oscar's resume CV in pdf format",
       "showInNav": false
     }
   ],
   "externalLinks": [
     {
-      "path": "https://www.instagram.com/gomugomu.cat",
-      "name": "instagram",
-      "description": "Ted Lead for escalations (joke reference to cat's account)",
+      "path": "https://linkedin.com/in/oscarmejiabautista",
+      "name": "linkedin",
+      "description": "Oscar's LinkedIn profile",
       "isExternal": true
     }
   ]

@@ -1,4 +1,4 @@
-Last Updated: Sep 2024
+Last Updated: Dec 2025
 
 ## Hey, Welcome!
 
@@ -34,8 +34,8 @@ I'll do my best to keep any info you share safe, but let's be real-no system is 
 
 ## Policy Updates (No Surprises)
 
-This policy is current as of **Sep 2024**. If I make any changes, I'll update it here, so you're always in the loop. Feel free to check back occasionally, but don't worry-I'm not making any big changes without letting you know.
+This policy is current as of **Dec 2025**. If I make any changes, I'll update it here, so you're always in the loop. Feel free to check back occasionally, but don't worry-I'm not making any big changes without letting you know.
 
 ## Got Questions?
 
-If you any questions, concerns, or just want to say hi, drop me an email at [hello@tedawf.com](mailto:hello@tedawf.com) or use the [contact form](/contact). I'd love to hear from you!
+If you any questions, concerns, or just want to say hi, drop me an email at [me@oscarmejiabautista.com](mailto:me@oscarmejiabautista.com) or use the [contact form](/contact). I'd love to hear from you!

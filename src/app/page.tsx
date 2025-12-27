@@ -16,12 +16,9 @@ import Link from "next/link";
 
 import homeContent from "@/data/home.json";
 
-const TED_BIRTH_YEAR = 1997;
 const LIMIT = 2; // max show 2
 
 export default async function Home() {
-  const currentAge = new Date().getFullYear() - TED_BIRTH_YEAR;
-
   const posts = (await getPosts())
     .filter((post) => !post.draft)
     .slice(0, LIMIT);
@@ -37,7 +34,7 @@ export default async function Home() {
           </h1>
 
           <p className="mt-2 whitespace-nowrap text-sm font-medium sm:text-base">
-            {currentAge} yo software engineer from Singapore 🇸🇬
+            senior software engineer from Houston, Texas 🇺🇸
           </p>
 
           <p className="mt-4 max-w-sm text-balance text-sm sm:text-base">

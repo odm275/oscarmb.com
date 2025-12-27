@@ -1,11 +1,11 @@
 {
-  "name": "Ted Thoughts.",
-  "short_name": "tedawf.com",
+  "name": "Oscar Mejia | Software Engineer",
+  "short_name": "oscarmejiabautista.com",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "description": "My personal site to showcase my developer work and opinions.",
+  "description": "Crafting web solutions from scratch to production at your service.",
   "icons": [
     {
       "src": "/icon-192.png",

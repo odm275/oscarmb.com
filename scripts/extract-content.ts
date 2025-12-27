@@ -34,10 +34,10 @@ function extractHomepageContent(): ContentChunk[] {
         contentType: "page",
         enrichment: [
           "This is my portfolio homepage with introduction and welcome message",
-          "I'm a backend developer with full-stack experience",
-          "You can chat with Ted Support for questions and answers",
-          "For escalations, contact Ted Lead on Instagram (this is a joke reference to my cat)",
-          "This site showcases my projects, career, and education",
+          "I'm a self-taught senior software engineer with full-stack experience based in Houston, Texas",
+          "You can chat with Oscar AI for questions and answers",
+          "For escalations, connect with me on LinkedIn",
+          "This site showcases my projects and career experience",
         ],
       },
     },
@@ -191,46 +191,6 @@ function extractCareerData(): ContentChunk[] {
 }
 
 /**
- * Extract structured data from education JSON
- */
-function extractEducationData(): ContentChunk[] {
-  const filePath = path.join(process.cwd(), "src/data/education.json");
-  const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-
-  const chunks: ContentChunk[] = [];
-
-  data.education.forEach((edu: any) => {
-    // Create coherent education description with links included
-    const eduText = `School: ${edu.name}. Degree: ${edu.title}. Period: ${edu.start} to ${edu.end}. ${edu.description ? edu.description.join(" ") : ""}`;
-
-    const linksText =
-      edu.links && edu.links.length > 0
-        ? ` Projects: ${edu.links.map((link: any) => `${link.name}: ${link.href}`).join(" | ")}`
-        : "";
-
-    chunks.push({
-      slug: `education:${toKebabCase(edu.name)}`,
-      title: `Education: ${edu.name}`,
-      content: eduText + linksText,
-      metadata: {
-        contentType: "education",
-        enrichment: [
-          `I studied at ${edu.name} and earned a ${edu.title}`,
-          `My education includes ${edu.title} from ${edu.name}`,
-          `I attended ${edu.name} from ${edu.start} to ${edu.end}`,
-          `I completed my ${edu.title.includes("BS") ? "bachelor's degree" : "diploma"} at ${edu.name}`,
-          `My field of study was ${edu.title.includes("Computer Science") ? "computer science" : "game development"}`,
-          `I graduated from ${edu.name} with a degree in ${edu.title}`,
-          `My academic background includes ${edu.title} from ${edu.name}`,
-        ],
-      },
-    });
-  });
-
-  return chunks;
-}
-
-/**
  * Extract structured data from socials JSON
  */
 function extractSocialsData(): ContentChunk[] {
@@ -326,7 +286,6 @@ function extractAllContent(): ExtractedContent {
     ...extractBlogPageContent(),
     ...extractProjectsData(),
     ...extractCareerData(),
-    ...extractEducationData(),
     ...extractSocialsData(),
     ...extractNavigationContent(),
   ];

@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "tacos.tedawf.com",
+        hostname: "oscarmejiabautista.com",
         port: "",
         pathname: "/images/**",
       },
