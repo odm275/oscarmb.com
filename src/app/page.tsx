@@ -5,6 +5,8 @@ import Projects from "@/components/Projects";
 import Socials from "@/components/Socials";
 import SwipeCards from "@/components/SwipeCards";
 import { Button } from "@/components/ui/Button";
+import homeContent from "@/data/home.json";
+import projectsData from "@/data/projects.json";
 import { getPosts } from "@/lib/posts";
 import {
   ArrowDown,
@@ -13,8 +15,6 @@ import {
   FileDown,
 } from "lucide-react";
 import Link from "next/link";
-
-import homeContent from "@/data/home.json";
 
 const LIMIT = 2; // max show 2
 
@@ -77,18 +77,20 @@ export default async function Home() {
 
       <Experience />
 
-      <section className="flex flex-col gap-8">
-        <div className="flex justify-between">
-          <h2 className="title text-2xl sm:text-3xl">featured projects</h2>
-          <LinkWithIcon
-            href="/projects"
-            position="right"
-            icon={<ArrowRightIcon className="size-5" />}
-            text="view more"
-          />
-        </div>
-        <Projects limit={LIMIT} />
-      </section>
+      {projectsData.projects.length > 0 && (
+        <section className="flex flex-col gap-8">
+          <div className="flex justify-between">
+            <h2 className="title text-2xl sm:text-3xl">featured projects</h2>
+            <LinkWithIcon
+              href="/projects"
+              position="right"
+              icon={<ArrowRightIcon className="size-5" />}
+              text="view more"
+            />
+          </div>
+          <Projects limit={LIMIT} />
+        </section>
+      )}
 
       <section className="flex flex-col gap-8">
         <div className="flex justify-between">
