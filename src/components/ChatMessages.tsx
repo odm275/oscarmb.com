@@ -1,11 +1,11 @@
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import { Bot, Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatPrompts from "./ChatPrompts";
 
 interface ChatMessagesProps {
-  messages: Message[];
+  messages: UIMessage[];
   error: Error | undefined;
   isLoading: boolean;
   onPromptClick?: (prompt: string) => void;

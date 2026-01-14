@@ -1,39 +1,35 @@
-import { ChatRequestOptions, Message } from "ai";
+import { UIMessage } from "ai";
 import { SendHorizontal, Trash } from "lucide-react";
-import { HTMLAttributes } from "react";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 
-interface ChatInputProps extends HTMLAttributes<HTMLFormElement> {
+interface ChatInputProps {
   input: string;
-  handleSubmit: (
-    event?: {
-      preventDefault?: () => void;
-    },
-    chatRequestOptions?: ChatRequestOptions,
-  ) => void;
-  handleInputChange: (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
-  ) => void;
+  onInputChange: (value: string) => void;
+  onSend: (message: string) => void;
   setMessages: (
-    messages: Message[] | ((messages: Message[]) => Message[]),
+    messages: UIMessage[] | ((messages: UIMessage[]) => UIMessage[]),
   ) => void;
-  onClearChat?: () => void;
   isLoading: boolean;
-  messages: Message[];
+  messages: UIMessage[];
 }
 
 export default function ChatInput({
   input,
-  handleSubmit,
-  handleInputChange,
+  onInputChange,
+  onSend,
   setMessages,
-  onClearChat,
   isLoading,
   messages,
 }: ChatInputProps) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.trim()) {
+      onSend(input);
+      onInputChange("");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -44,7 +40,6 @@ export default function ChatInput({
         variant="outline"
         onClick={() => {
           setMessages([]);
-          onClearChat?.();
         }}
         className="h-9 px-3 py-2 touch-target sm:h-10 sm:px-4 sm:py-2.5"
         disabled={messages.length === 0}
@@ -56,7 +51,7 @@ export default function ChatInput({
         autoFocus
         placeholder="Ask something..."
         value={input}
-        onChange={handleInputChange}
+        onChange={(e) => onInputChange(e.target.value)}
         className="h-8 text-base sm:h-9 sm:text-sm"
         onKeyDown={(e) => {
           if (e.key === "Enter") {

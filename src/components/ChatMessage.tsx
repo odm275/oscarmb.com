@@ -1,17 +1,24 @@
 import { cn } from "@/lib/utils";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import { Bot } from "lucide-react";
 import Link from "next/link";
 import Markdown from "react-markdown";
 
 interface ChatMessageProps {
-  message: Message;
+  message: UIMessage;
 }
 
-export default function ChatMessage({
-  message: { role, content },
-}: ChatMessageProps) {
-  const isBot = role === "assistant";
+// Extract text content from UIMessage parts
+function getMessageText(message: UIMessage): string {
+  return message.parts
+    .filter((part): part is { type: "text"; text: string } => part.type === "text")
+    .map((part) => part.text)
+    .join("");
+}
+
+export default function ChatMessage({ message }: ChatMessageProps) {
+  const isBot = message.role === "assistant";
+  const content = getMessageText(message);
 
   return (
     <div
