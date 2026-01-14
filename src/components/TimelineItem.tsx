@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import { Badge } from "./ui/Badge";
 import Icon from "./Icon";
+import PoeticLogo from "./logos/PoeticLogo";
 
 interface Props {
   experience: Experience;
@@ -20,12 +21,18 @@ export default function TimelineItem({ experience }: Props) {
         className="absolute -left-16 top-4 flex items-center justify-center rounded-full bg-white"
       >
         <Avatar className="size-12 border">
-          <AvatarImage
-            src={logo}
-            alt={name}
-            className="bg-background object-contain"
-          />
-          <AvatarFallback>{name[0]}</AvatarFallback>
+          {logo?.includes("poeticLogo") ? (
+            <PoeticLogo className="aspect-square h-full w-full bg-background object-contain" />
+          ) : (
+            <>
+              <AvatarImage
+                src={logo}
+                alt={name}
+                className="bg-background object-contain"
+              />
+              <AvatarFallback>{name[0]}</AvatarFallback>
+            </>
+          )}
         </Avatar>
       </Link>
       <div className="flex flex-1 flex-col justify-start gap-1">
