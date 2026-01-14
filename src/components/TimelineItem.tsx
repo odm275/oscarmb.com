@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import { Badge } from "./ui/Badge";
 import Icon from "./Icon";
+import CVSLogo from "./logos/CVSLogo";
 import PoeticLogo from "./logos/PoeticLogo";
 
 interface Props {
@@ -23,6 +24,8 @@ export default function TimelineItem({ experience }: Props) {
         <Avatar className="size-12 border">
           {logo?.includes("poeticLogo") ? (
             <PoeticLogo className="aspect-square h-full w-full bg-background object-contain" />
+          ) : logo?.includes("cvsLogo") ? (
+            <CVSLogo className="aspect-square h-full w-full bg-background object-contain" />
           ) : (
             <>
               <AvatarImage
