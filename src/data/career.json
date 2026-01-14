@@ -6,6 +6,7 @@
       "title": "Senior Software Engineer",
       "logo": "/img/cvsLogo.svg",
       "start": "Oct 2022",
+      "end": "Dec 2025",
       "description": [
         "Architected framework-agnostic TypeScript packages to centralize core logic, enforcing Jest and documentation standards to empower external teams to ship features independently",
         "Engineered regulatory compliance workflow for pseudoephedrine purchases (ID.me) in Next.js, advocating for a unified data contract that accelerated web and mobile development",
