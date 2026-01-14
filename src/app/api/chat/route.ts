@@ -82,7 +82,7 @@ export async function POST(req: Request) {
 
     // Stream the response using Google Gemini (FREE tier: 1500 requests/day!)
     const result = streamText({
-      model: google("gemini-3-flash"), // Gemini 3 Flash - speed and efficiency
+      model: google("gemini-2.5-flash-lite"), // Gemini 2.5 Flash Lite - fastest and most cost-efficient
       system: SYSTEM_PROMPT + context,
       messages: coreMessages,
     });

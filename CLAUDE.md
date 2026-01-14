@@ -10,7 +10,7 @@ This is a personal portfolio website built with Next.js 14, featuring an AI chat
 - Next.js 14 (App Router, Node Runtime for chat)
 - TypeScript
 - Tailwind CSS + Shadcn UI
-- Google Gemini 3 Flash (chat responses - FREE tier: 1500 requests/day)
+- Google Gemini 2.5 Flash Lite (chat responses - FREE tier: 1500 requests/day)
 - Transformers.js (local embeddings - 100% FREE)
 - Vercel AI SDK v6
 - TACOS API (external blog backend)
@@ -74,7 +74,7 @@ The AI chatbot uses a **100% FREE local embedding system** with runtime RAG:
 **Cost breakdown:**
 - Embedding generation: **$0.00** (local Transformers.js)
 - Runtime query embedding: **$0.00** (local Transformers.js)
-- Chat responses: **FREE** for 1500 requests/day with Google Gemini 3 Flash
+- Chat responses: **FREE** for 1500 requests/day with Google Gemini 2.5 Flash Lite
 
 **To update chatbot knowledge:**
 1. Modify content in `src/data/*.json` files
@@ -161,7 +161,7 @@ TACOS API endpoints require the `X-TACOS-Key` header for authentication.
 
 - **Package manager**: This project uses pnpm. Always use `pnpm install`, not npm or yarn.
 - **Embeddings are FREE**: Uses Transformers.js locally - no API keys needed for embeddings!
-- **Chat responses are FREE**: Google Gemini 3 Flash offers 1500 free requests/day - just need `GOOGLE_GENERATIVE_AI_API_KEY`
+- **Chat responses are FREE**: Google Gemini 2.5 Flash Lite offers 1500 free requests/day - just need `GOOGLE_GENERATIVE_AI_API_KEY`
 - **Embeddings file**: The embeddings.json file is generated, don't edit manually. Regenerate with `pnpm embeddings` after data changes (100% free).
 - **Script runner**: Uses `tsx` instead of `ts-node` for better ESM support with Transformers.js.
 - **Runtime**: Chat API uses Node runtime (not Edge) because Transformers.js requires Node APIs for local model inference.
