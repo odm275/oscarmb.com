@@ -92,18 +92,20 @@ export default async function Home() {
         </section>
       )}
 
-      <section className="flex flex-col gap-8">
-        <div className="flex justify-between">
-          <h2 className="title text-3xl">recent posts</h2>
-          <LinkWithIcon
-            href="/blog"
-            position="right"
-            icon={<ArrowRightIcon className="size-5" />}
-            text="view more"
-          />
-        </div>
-        <Posts posts={posts} />
-      </section>
+      {posts.length > 0 && (
+        <section className="flex flex-col gap-8">
+          <div className="flex justify-between">
+            <h2 className="title text-3xl">recent posts</h2>
+            <LinkWithIcon
+              href="/blog"
+              position="right"
+              icon={<ArrowRightIcon className="size-5" />}
+              text="view more"
+            />
+          </div>
+          <Posts posts={posts} />
+        </section>
+      )}
     </article>
   );
 }
