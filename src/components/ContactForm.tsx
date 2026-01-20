@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/actions";
 import { ContactFormSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PaperPlaneIcon, ReloadIcon } from "@radix-ui/react-icons";
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -62,16 +63,35 @@ export default function ContactForm() {
     if (!formData) return;
 
     setShowConfirmDialog(false);
-    const result = await sendEmail(formData);
 
-    if (result.error) {
+    // Set user context for this submission
+    Sentry.setContext("contact_form", {
+      name: formData.name,
+      email: formData.email,
+      message_length: formData.message.length,
+    });
+
+    try {
+      const result = await sendEmail(formData);
+
+      if (result.error) {
+        Sentry.captureMessage("Contact form submission failed", {
+          level: "error",
+          extra: { error: result.error },
+        });
+        toast.error("An error occurred! Please try again later.");
+        return;
+      }
+
+      toast.success("Message sent successfully!");
+      reset();
+      setFormData(null);
+    } catch (error) {
+      Sentry.captureException(error, {
+        extra: { formData: { ...formData, message: "[REDACTED]" } },
+      });
       toast.error("An error occurred! Please try again later.");
-      return;
     }
-
-    toast.success("Message sent successfully!");
-    reset();
-    setFormData(null);
   };
 
   return (

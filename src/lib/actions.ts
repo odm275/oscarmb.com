@@ -1,6 +1,7 @@
 "use server";
 
 import ContactFormEmail from "@/components/email/ContactFormEmail";
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { z } from "zod";
 import { ContactFormSchema } from "./schemas";
@@ -35,6 +36,12 @@ export async function sendEmail(data: ContactFormInputs) {
 
     return { success: true };
   } catch (error) {
+    Sentry.captureException(error, {
+      extra: {
+        action: "sendEmail",
+        recipient: result.data.email,
+      },
+    });
     return { error: error instanceof Error ? error.message : "An unknown error occurred" };
   }
 }
