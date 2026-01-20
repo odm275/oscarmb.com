@@ -1,3 +1,12 @@
+import { build } from "velite";
+
+// Trigger Velite build on dev/build
+const isDev = process.argv.includes("dev");
+if (!process.env.VELITE_STARTED && (isDev || process.argv.includes("build"))) {
+  process.env.VELITE_STARTED = "1";
+  await build({ watch: isDev, clean: !isDev });
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {

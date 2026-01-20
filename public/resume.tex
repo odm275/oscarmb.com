@@ -1,0 +1,62 @@
+\documentclass{resume} 
+
+% OPTIMIZATION: Tight margins (0.3in) to maximize width
+\usepackage[left=0.3in,top=0.3in,right=0.3in,bottom=0.3in]{geometry} 
+\newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}} 
+\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
+\name{Oscar Mejia} 
+
+\address{(281) 713-0784 \\ Houston, TX \\ US Citizen} 
+\address{
+\href{mailto:me@oscarmejiabautista.com}{me@oscarmejiabautista.com} \\ \href{www.linkedin.com/in/oscarmejiabautista}{linkedin.com/in/oscarmejiabautista}}  
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+%	SKILLS
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{SKILLS}
+$$\begin{tabular}{l p{12cm}} 
+\textbf{Languages} & TypeScript, JavaScript (Node.js), HTML5, CSS \\ 
+\textbf{Frontend} & React, Next.js, React Query, Stencil.js, Redux, Tailwind, A11y \\ 
+\textbf{Backend} & Express, tRPC, GraphQL, REST APIs, PostgreSQL \\ \textbf{Tools} & Docker, Google Cloud, Splunk, Git, Jest, MSW, Playwright, Biome, Git, Github, Docker, Charles Proxy, Claude Code, Cursor, Storybook \\ \end{tabular}$$
+\end{rSection}
+
+%----------------------------------------------------------------------------------------
+%	EXPERIENCE
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{EXPERIENCE}
+
+\textbf{Senior Software Engineer} \hfill Oct 2022 - Dec 2025\\
+CVS Health Co.(Branding Brand) \hfill \textit{Houston, TX}
+ \begin{itemize}
+    \itemsep -4pt {} 
+    \item Authored framework-agnostic TypeScript packages, enforcing strict test coverage, comprehensive documentation, and automated CI/CD pipelines. This decentralized logic, effectively removing the CVS Shop team as an integration middleman and empowering external teams to ship independently.
+    \item Built the regulatory compliance workflow for pseudoephedrine purchases by integrating ID.me across CVS's Shop platform in Next.js. Identified critical API scalability flaws and successfully advocated for a unified data contract, accelerating development across web and mobile.
+    \item Partnered with a Staff Engineer to design a unified GraphQL schema for CVS Shop pages, shifting data aggregation to the server to improve client consistency. Implemented a custom adapter pattern to normalize data, enabling a phased migration that reduced client-side round-trips with zero service interruption.
+    \item Built third-party ad integrations by defining strict API contracts to maximize user data telemetry and tracking. Implemented React logic that leveraged these data signals to deliver relevant, targeted advertising without compromising frontend performance.
+    \item Collaborated in defining the team's next-generation tech stack, prioritizing development experience and page speed. Validated the architecture by migrating the high-traffic Product Detail Page, replacing legacy Express/Redux logic to improve page speed and developer velocity.
+
+\end{itemize}
+ 
+\textbf{Full-Stack Engineer} \hfill Oct 2020 - Oct 2022\\
+Freelance \hfill \textit{Houston, TX}
+ \begin{itemize}
+    \itemsep -4pt {} 
+    \item Pitched and spearheaded the digital transformation of a legacy paper-based procurement system into a unified web platform. By digitizing manual workflows, I provided ownership with their first-ever centralized data history, enabling accurate demand forecasting and real-time visibility into cost fluctuations during a period of expansion.
+    \item Solely architected and built Mise, a full-stack ERP system, using Next.js, tRPC, Prisma, and PostgreSQL. Independently developed the end-to-end infrastructure, including a normalized database schema and Role-Based Access Control (RBAC) to manage permissions across multiple store locations.
+    \item Engineered a snappy, user-friendly experience by implementing optimistic updates for instant UI feedback and strategic loading fallbacks. Optimized frontend performance to handle 100+ line-item forms without input lag and authored all training documentation to ensure a successful staff transition.
+\end{itemize}
+
+\textbf{Software Developer} \hfill Dec 2018 - Sept 2022\\
+Poetic \hfill \textit{Houston, TX}
+ \begin{itemize}
+    \itemsep -4pt {} 
+\item Collaborated on the full-stack development of a B2B dealer portal for Kobelco Cranes using React, TypeScript, and GraphQL. Implemented key features for the parts ordering system, enabling authorized dealers to query real-time inventory and fulfill orders. 
+\item Expanded the backend architecture of the Houston Food Bank’s volunteer management system. Implemented scheduling constraints and event coordination logic in Ruby on Rails, directly increasing administrative throughput for volunteer operations.
+\end{itemize} 
+
+\end{rSection} 
+
+\end{document}

@@ -20,7 +20,7 @@ interface Props {
   posts: PostSummary[];
 }
 
-type SortOption = "newest" | "oldest" | "title" | "views";
+type SortOption = "newest" | "oldest" | "title";
 
 export default function PostsWithSearch({ posts }: Props) {
   const [query, setQuery] = useState("");
@@ -53,8 +53,6 @@ export default function PostsWithSearch({ posts }: Props) {
           );
         case "title":
           return a.title.localeCompare(b.title);
-        case "views":
-          return (b.views ?? 0) - (a.views ?? 0);
         default:
           return 0;
       }
@@ -122,7 +120,6 @@ export default function PostsWithSearch({ posts }: Props) {
                 <SelectItem value="newest">Newest</SelectItem>
                 <SelectItem value="oldest">Oldest</SelectItem>
                 <SelectItem value="title">A-Z</SelectItem>
-                <SelectItem value="views">Most views</SelectItem>
               </SelectContent>
             </Select>
           </div>

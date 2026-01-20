@@ -18,8 +18,8 @@ import Link from "next/link";
 
 const LIMIT = 2; // max show 2
 
-export default async function Home() {
-  const posts = (await getPosts())
+export default function Home() {
+  const posts = getPosts()
     .filter((post) => !post.draft)
     .slice(0, LIMIT);
 

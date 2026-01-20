@@ -1,60 +1,47 @@
-export type PostSummary = {
-  id: string;
-  slug: string;
-  title: string;
-  summary?: string;
-  image?: string;
-  publishedAt?: string;
-  updatedAt?: string;
-  tags: string[];
-  readingTime: string;
-  draft: boolean;
-  coAuthors?: string[];
-  views?: number;
-};
+import { posts } from "#velite";
 
-export type PostDetail = PostSummary & {
-  content: string;
-};
+export type Post = (typeof posts)[number];
 
-const TACOS_API_URL = process.env.TACOS_API_URL || "http://localhost:8000";
-const TACOS_API_KEY = process.env.TACOS_API_KEY || "";
+export type PostSummary = Omit<Post, "body">;
 
-const fetchWithApiKey = async (url: string) => {
-  const res = await fetch(url, {
-    cache: "no-store", // Always fetch fresh content for instant updates
-    headers: {
-      "X-TACOS-Key": TACOS_API_KEY,
-    },
-  });
+export type PostDetail = Post;
 
-  if (!res.ok) {
-    throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  }
-  return res.json();
-};
+/**
+ * Get all published posts, sorted by date descending
+ */
+export function getPosts(limit?: number): PostSummary[] {
+  const published = posts
+    .filter((post) => process.env.NODE_ENV === "development" || !post.draft)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    )
+    .map(({ body, ...rest }) => rest);
 
-export async function getPosts(limit?: number): Promise<PostSummary[]> {
-  try {
-    const posts: PostSummary[] = await fetchWithApiKey(
-      `${TACOS_API_URL}/posts`,
-    );
-    // Posts already sorted by publishedAt desc from the API
-    return limit ? posts.slice(0, limit) : posts;
-  } catch (err) {
-    console.error("Error fetching posts:", err);
-    return [];
-  }
+  return limit ? published.slice(0, limit) : published;
 }
 
-export async function getPostBySlug(slug: string): Promise<PostDetail | null> {
-  try {
-    const post: PostDetail = await fetchWithApiKey(
-      `${TACOS_API_URL}/posts/${slug}`,
-    );
-    return post;
-  } catch (err) {
-    console.error(`Error fetching post ${slug}:`, err);
+/**
+ * Get a single post by slug
+ */
+export function getPostBySlug(slug: string): PostDetail | null {
+  const post = posts.find((p) => p.slug === slug);
+
+  if (!post) return null;
+
+  // In production, hide draft posts
+  if (process.env.NODE_ENV !== "development" && post.draft) {
     return null;
   }
+
+  return post;
+}
+
+/**
+ * Get all post slugs for static generation
+ */
+export function getAllSlugs(): string[] {
+  return posts
+    .filter((post) => process.env.NODE_ENV === "development" || !post.draft)
+    .map((post) => post.slug);
 }

@@ -1,36 +1,28 @@
 import BlogImage from "@/components/BlogImage";
 import LinkWithIcon from "@/components/LinkWithIcon";
-import MDXContent from "@/components/MDXContent";
-import ViewCounter from "@/components/ViewCounter";
+import { MDXRenderer } from "@/components/MDXRenderer";
 import { Badge } from "@/components/ui/Badge";
 import { Separator } from "@/components/ui/Separator";
-import { getPostBySlug, getPosts } from "@/lib/posts";
+import { getAllSlugs, getPostBySlug } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 import {
   AlertTriangleIcon,
   ArrowLeftIcon,
   CalendarIcon,
   ClockIcon,
-  EyeIcon,
   Edit3Icon,
   UsersIcon,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  const posts = await getPosts(10);
-  const slugs = posts.map((post) => ({ slug: post.slug }));
-
-  return slugs;
+export function generateStaticParams() {
+  const slugs = getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export function generateMetadata({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const post = await getPostBySlug(slug);
+  const post = getPostBySlug(slug);
 
   if (!post) {
     return {
@@ -49,9 +41,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default function Post({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const post = await getPostBySlug(slug);
+  const post = getPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -67,10 +59,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
     readingTime,
     draft,
     coAuthors,
-    views,
   } = post;
-
-  const initialViewCount = typeof views === "number" ? views : 0;
 
   const shouldShowUpdated =
     updatedAt &&
@@ -140,17 +129,6 @@ export default async function Post({ params }: { params: { slug: string } }) {
                   className="hidden h-4 sm:block"
                 />
 
-                {/* Views */}
-                <div className="flex items-center gap-1.5">
-                  <EyeIcon className="h-4 w-4" />
-                  <ViewCounter slug={slug} initialCount={initialViewCount} />
-                </div>
-
-                <Separator
-                  orientation="vertical"
-                  className="hidden h-4 sm:block"
-                />
-
                 {/* Published date */}
                 <div className="flex items-center gap-1.5">
                   <CalendarIcon className="h-4 w-4" />
@@ -205,7 +183,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
 
         {/* Content */}
         <main className="prose prose-lg max-w-none dark:prose-invert">
-          <MDXContent source={post.content} />
+          <MDXRenderer code={post.body} />
         </main>
 
         {/* Footer */}
