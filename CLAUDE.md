@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal portfolio website built with Next.js 14, featuring an AI chatbot powered by RAG (Retrieval-Augmented Generation), a blog system backed by the TACOS API, and dynamic content management.
+This is a personal portfolio website built with Next.js 14, featuring an AI chatbot powered by RAG (Retrieval-Augmented Generation), a blog system, and dynamic content management.
 
 **Tech Stack:**
 - Next.js 14 (App Router, Node Runtime for chat)
@@ -13,7 +13,6 @@ This is a personal portfolio website built with Next.js 14, featuring an AI chat
 - Google Gemini 2.5 Flash Lite (chat responses - FREE tier: 1500 requests/day)
 - Transformers.js (local embeddings - 100% FREE)
 - Vercel AI SDK v6
-- TACOS API (external blog backend)
 - Resend (email)
 - pnpm (package manager)
 
@@ -43,9 +42,6 @@ pnpm embeddings
 
 # Extract content from data files
 pnpm extract
-
-# Push content to TACOS backend (production only)
-pnpm push
 ```
 
 ## Architecture
@@ -81,19 +77,6 @@ The AI chatbot uses a **100% FREE local embedding system** with runtime RAG:
 2. Run `pnpm embeddings` to regenerate embeddings.json (free!)
 3. Rebuild and deploy
 
-### Blog System (TACOS Integration)
-
-Blog posts are managed by an external backend service called TACOS:
-
-- **Post fetching** (`src/lib/posts.ts`): Fetches posts from TACOS API with authentication
-- **Content management**: Blog posts are managed via Obsidian + LiveSync plugin → CouchDB → TACOS
-- **Content extraction** (`scripts/extract-content.ts`): Extracts site content for TACOS indexing
-- **Content push** (`scripts/push-content.ts`): Sends extracted content to TACOS backend (production only)
-
-**Environment variables required:**
-- `TACOS_API_URL`: Backend API endpoint
-- `TACOS_API_KEY`: Authentication key for TACOS API
-
 ### Data-Driven Content
 
 Most content is defined in `src/data/*.json` files:
@@ -119,7 +102,7 @@ Most content is defined in `src/data/*.json` files:
 **App Router pages:**
 - `/` - Homepage with introduction
 - `/projects` - Project showcase
-- `/blog` - Blog posts from TACOS API
+- `/blog` - Blog posts
 - `/blog/[slug]` - Individual blog post
 - `/contact` - Contact form (Resend integration)
 - `/privacy` - Privacy policy
@@ -154,9 +137,6 @@ The chat API uses Node Runtime (not Edge) because Transformers.js requires Node.
 // This is required for Transformers.js local embedding generation
 ```
 
-### API Authentication
-TACOS API endpoints require the `X-TACOS-Key` header for authentication.
-
 ## Important Notes
 
 - **Package manager**: This project uses pnpm. Always use `pnpm install`, not npm or yarn.
@@ -165,6 +145,4 @@ TACOS API endpoints require the `X-TACOS-Key` header for authentication.
 - **Embeddings file**: The embeddings.json file is generated, don't edit manually. Regenerate with `pnpm embeddings` after data changes (100% free).
 - **Script runner**: Uses `tsx` instead of `ts-node` for better ESM support with Transformers.js.
 - **Runtime**: Chat API uses Node runtime (not Edge) because Transformers.js requires Node APIs for local model inference.
-- **Content push**: The `push-content.ts` script only runs in production (`VERCEL_ENV=production`) to avoid pushing preview/development content.
-- **Blog content**: Blog posts are NOT stored in this repository - they come from the TACOS backend API.
 - **Environment variables**: See `.env.example` for required variables. Use `.env.local` for development.

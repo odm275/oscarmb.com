@@ -95,13 +95,12 @@ function extractBlogPageContent(): ContentChunk[] {
       slug: "/blog",
       title: "Blog Information",
       content:
-        "Blog posts are handled separately by the backend RAG system. Posts cover technical topics, project updates, and personal insights. Chatbot can direct visitors to specific blog post URLs. All blog content is available for embedding via TACOS backend system.",
+        "Blog posts cover technical topics, project updates, and personal insights. Chatbot can direct visitors to specific blog post URLs.",
       metadata: {
         contentType: "page",
         enrichment: [
           "This is my blog page with technical articles and project updates",
           "I write blog posts about technical topics and personal insights",
-          "My blog content is integrated with the TACOS backend system",
           "You can find my technical writing and tutorials here",
           "The blog showcases my project updates and development experiences",
         ],
