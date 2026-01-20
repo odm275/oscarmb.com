@@ -1,5 +1,6 @@
 import { google } from "@ai-sdk/google";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import * as Sentry from "@sentry/nextjs";
 import { generateEmbedding } from "@/lib/embeddings";
 import { formatContext, retrieveContext } from "@/lib/rag";
 
@@ -24,9 +25,7 @@ export async function POST(req: Request) {
     const { messages }: { messages: UIMessage[] } = await req.json();
 
     // Get the last user message for embedding
-    const lastUserMessage = messages
-      .filter((m) => m.role === "user")
-      .pop();
+    const lastUserMessage = messages.filter((m) => m.role === "user").pop();
 
     if (!lastUserMessage) {
       return new Response(JSON.stringify({ error: "No user message found" }), {
@@ -39,7 +38,7 @@ export async function POST(req: Request) {
     // UIMessage has a "parts" array with typed content
     const textPart = lastUserMessage.parts.find(
       (part): part is Extract<typeof part, { type: "text" }> =>
-        part.type === "text"
+        part.type === "text",
     );
 
     const messageText = textPart?.text || "";
@@ -90,6 +89,14 @@ export async function POST(req: Request) {
     return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error("[API Chat Route Error]", error);
+
+    // Capture the error in Sentry with additional context
+    Sentry.captureException(error, {
+      tags: {
+        route: "/api/chat",
+      },
+    });
+
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
     return new Response(

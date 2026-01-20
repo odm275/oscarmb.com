@@ -41,3 +41,5 @@ next-env.d.ts
 output/
 
 .velite
+# Sentry Config File
+.env.sentry-build-plugin
