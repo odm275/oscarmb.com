@@ -20,7 +20,7 @@ export async function sendEmail(data: ContactFormInputs) {
   try {
     const { name, email, message } = result.data;
     const { data, error } = await resend.emails.send({
-      from: `oscarmejiabautista.com <contact@oscarmejiabautista.com>`,
+      from: `me@oscarmejiabautista.com <me@oscarmejiabautista.com>`,
       to: "me@oscarmejiabautista.com",
       replyTo: [email],
       cc: [email],
@@ -30,7 +30,6 @@ export async function sendEmail(data: ContactFormInputs) {
     });
 
     if (!data || error) {
-      console.error(error?.message);
       throw new Error("Failed to send email!");
     }
 
