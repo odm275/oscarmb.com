@@ -77,6 +77,46 @@ The AI chatbot uses a **100% FREE local embedding system** with runtime RAG:
 2. Run `pnpm embeddings` to regenerate embeddings.json (free!)
 3. Rebuild and deploy
 
+### Chunking Strategy
+
+The embedding system uses **semantic/logical chunking** rather than fixed-size splits. Each content type has a dedicated extraction function in `scripts/generate-embeddings.ts` that produces one chunk per logical entity.
+
+**Chunk types and granularity:**
+
+| Source | Granularity | Slug Pattern | Example |
+|--------|-------------|--------------|---------|
+| Homepage | 1 chunk total | `/` | Intro text + welcome message |
+| Privacy Policy | 1 chunk total | `/privacy` | Full policy text |
+| Projects | 1 per project | `projects:{name}` | Project description + tags + links |
+| Career | 1 per job | `career:{company}-{title}` | Job title + dates + bullet points |
+| Socials | 1 chunk total | `socials:links` | All contact methods |
+| Navigation | 1 chunk total | `navigation:routes` | Site page descriptions |
+| Resume Skills | 1 chunk | `resume:skills` | All technical skills |
+| Resume Experience | 1 per job | `resume:{company}` | Role + responsibilities |
+| Resume Overview | 1 chunk | `resume:overview` | Contact info + summary |
+
+**Content enrichment pattern:**
+
+Chunks aren't raw data - they're templated into natural language with intentional redundancy to strengthen embedding associations:
+
+```typescript
+// Career chunk template - repeats key terms for better semantic matching
+`I worked at ${job.name} as a ${job.title} from ${period}. ${descriptions}. My role at ${job.name} was ${job.title}.`
+
+// Project chunk template - repeats technologies
+`Project name: ${project.name}. ${project.description}. Technologies used: ${project.tags.join(", ")}. I built ${project.name} using ${project.tags.join(", ")}.`
+```
+
+**Why this approach works:**
+- Questions naturally map to chunks ("Tell me about CVS" → CVS career chunk)
+- Each chunk is self-contained and understandable without context
+- Content is naturally paragraph-sized, no need for splitting or overlap
+- Semantic boundaries preserve meaning better than arbitrary character limits
+
+**When to reconsider:**
+- If adding long-form content (multi-page blog posts), consider splitting by heading/section
+- For very large documents, use fixed-size chunks (500-1000 tokens) with 10-20% overlap
+
 ### Data-Driven Content
 
 Most content is defined in `src/data/*.json` files:
