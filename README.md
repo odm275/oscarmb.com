@@ -22,7 +22,7 @@ Check it out here: **[oscarmb.com](https://oscarmb.com)**
 - Tailwind CSS + Shadcn UI
 - AI SDK (OpenAI + Google/Gemini)
 - Velite + next-mdx-remote (MDX processing)
-- Local embeddings with Xenova/transformers
+- Google text-embedding-004 (embeddings)
 - Sentry (error monitoring)
 - Resend (email)
 - Playwright (e2e testing)

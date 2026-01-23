@@ -7,11 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a personal portfolio website built with Next.js 14, featuring an AI chatbot powered by RAG (Retrieval-Augmented Generation), a blog system, and dynamic content management.
 
 **Tech Stack:**
-- Next.js 14 (App Router, Node Runtime for chat)
+- Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS + Shadcn UI
 - Google Gemini 2.5 Flash Lite (chat responses - FREE tier: 1500 requests/day)
-- Transformers.js (local embeddings - 100% FREE)
+- Google text-embedding-004 (embeddings - 768 dimensions)
 - Vercel AI SDK v6
 - Resend (email)
 - pnpm (package manager)
@@ -37,7 +37,7 @@ pnpm lint
 # Format code
 pnpm format
 
-# Generate embeddings for RAG system (100% FREE - uses local Transformers.js)
+# Generate embeddings for RAG system (requires GOOGLE_GENERATIVE_AI_API_KEY)
 pnpm embeddings
 
 # Extract content from data files
@@ -48,33 +48,32 @@ pnpm extract
 
 ### RAG (Retrieval-Augmented Generation) System
 
-The AI chatbot uses a **100% FREE local embedding system** with runtime RAG:
+The AI chatbot uses **Google's embedding and generation APIs** with runtime RAG:
 
 1. **Content sources** (`src/data/*.json`): Personal data stored as JSON files (home, career, projects, socials, routes)
-2. **Embedding generation** (`scripts/generate-embeddings.ts`): Extracts and embeds content using **Transformers.js** (local, free)
-   - Model: `Xenova/all-MiniLM-L6-v2` (384-dimensional embeddings)
-   - Downloads ~25MB model on first run, then cached locally
+2. **Embedding generation** (`scripts/generate-embeddings.ts`): Extracts and embeds content using **Google's text-embedding-004**
+   - Model: `text-embedding-004` (768-dimensional embeddings)
+   - Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable
    - Run with: `pnpm embeddings`
 3. **Storage** (`src/data/embeddings.json`): Pre-generated embeddings stored as JSON, loaded at runtime
-4. **Runtime embedding** (`src/lib/embeddings.ts`): Shared utility using Transformers.js for query embedding
+4. **Runtime embedding** (`src/lib/embeddings.ts`): Shared utility using Google's embedding API for query embedding
 5. **Retrieval** (`src/lib/rag.ts`): Uses cosine similarity to find relevant context for user queries
-6. **Chat API** (`src/app/api/chat/route.ts`): Node runtime (not Edge) that embeds queries locally, retrieves context, and streams responses
+6. **Chat API** (`src/app/api/chat/route.ts`): Embeds user queries, retrieves context, and streams responses via Gemini
 
 **Key characteristics:**
-- **Embeddings are FREE** - uses local Transformers.js model (no API costs!)
-- Both offline generation (build time) and online queries (runtime) use the same free model
+- All LLM-related operations use Google's APIs for consistency
+- Both offline generation (build time) and online queries (runtime) use the same embedding model
 - No vector database needed - embeddings stored in JSON
 - Context retrieval happens in-memory using cosine similarity
-- Fast, completely free for embeddings, only pay for LLM responses
 
 **Cost breakdown:**
-- Embedding generation: **$0.00** (local Transformers.js)
-- Runtime query embedding: **$0.00** (local Transformers.js)
+- Embedding generation: ~$0.0002 per build (~15 chunks)
+- Runtime query embedding: ~$0.00001 per query
 - Chat responses: **FREE** for 1500 requests/day with Google Gemini 2.5 Flash Lite
 
 **To update chatbot knowledge:**
 1. Modify content in `src/data/*.json` files
-2. Run `pnpm embeddings` to regenerate embeddings.json (free!)
+2. Run `pnpm embeddings` to regenerate embeddings.json
 3. Rebuild and deploy
 
 ### Chunking Strategy
@@ -170,19 +169,15 @@ import { Button } from "@/components/ui/Button";
 - Calistoga font for headings (`font-serif` class)
 - Inter font for body text (`font-sans` class)
 
-### Node Runtime for Chat
-The chat API uses Node Runtime (not Edge) because Transformers.js requires Node.js APIs for local model inference:
-```typescript
-// Note: Using Node runtime (default), not Edge
-// This is required for Transformers.js local embedding generation
-```
+### Runtime Configuration
+The chat API uses the default Node runtime. Edge runtime is not required since all AI operations use Google's APIs via the Vercel AI SDK.
 
 ## Important Notes
 
 - **Package manager**: This project uses pnpm. Always use `pnpm install`, not npm or yarn.
-- **Embeddings are FREE**: Uses Transformers.js locally - no API keys needed for embeddings!
-- **Chat responses are FREE**: Google Gemini 2.5 Flash Lite offers 1500 free requests/day - just need `GOOGLE_GENERATIVE_AI_API_KEY`
-- **Embeddings file**: The embeddings.json file is generated, don't edit manually. Regenerate with `pnpm embeddings` after data changes (100% free).
-- **Script runner**: Uses `tsx` instead of `ts-node` for better ESM support with Transformers.js.
-- **Runtime**: Chat API uses Node runtime (not Edge) because Transformers.js requires Node APIs for local model inference.
+- **Google API key required**: Both embeddings and chat responses use Google's APIs - requires `GOOGLE_GENERATIVE_AI_API_KEY`
+- **Chat responses are FREE**: Google Gemini 2.5 Flash Lite offers 1500 free requests/day
+- **Embeddings are cheap**: Google's text-embedding-004 costs ~$0.00001 per 1K tokens
+- **Embeddings file**: The embeddings.json file is generated, don't edit manually. Regenerate with `pnpm embeddings` after data changes.
+- **Script runner**: Uses `tsx` for running TypeScript scripts.
 - **Environment variables**: See `.env.example` for required variables. Use `.env.local` for development.

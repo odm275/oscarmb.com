@@ -4,8 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { generateEmbedding } from "@/lib/embeddings";
 import { formatContext, retrieveContext } from "@/lib/rag";
 
-// Note: Using Node runtime (not Edge) because Transformers.js needs Node APIs
-// This is the default, no need to specify: export const runtime = "nodejs";
+// Uses default Node runtime for Google AI SDK
 
 const SYSTEM_PROMPT = `You are Oscar's AI assistant on his portfolio website. You help visitors learn about Oscar's background, skills, projects, and experience.
 
@@ -53,8 +52,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Embed the user's query using FREE local model (Transformers.js)
-    // No API key needed! Runs completely locally.
+    // Embed the user's query using Google's text-embedding-004
     const embedding = await generateEmbedding(messageText);
 
     // Retrieve relevant context from pre-generated embeddings

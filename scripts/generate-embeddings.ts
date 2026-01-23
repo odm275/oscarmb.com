@@ -2,7 +2,11 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { config } from "dotenv";
 import { generateEmbedding } from "../src/lib/embeddings";
+
+// Load environment variables from .env.local
+config({ path: ".env.local" });
 
 interface ContentChunk {
   slug: string;
@@ -307,11 +311,15 @@ function extractResumeContent(): ContentChunk[] {
  * Main function to generate embeddings
  */
 async function generateEmbeddings(): Promise<void> {
-  console.log("🚀 Starting embedding generation with Transformers.js");
-  console.log("📦 Using model: Xenova/all-MiniLM-L6-v2 (100% free, local)");
-  console.log(
-    "⏬ First run will download ~25MB model, subsequent runs use cache\n",
-  );
+  console.log("🚀 Starting embedding generation with Google AI");
+  console.log("📦 Using model: text-embedding-004 (768 dimensions)");
+  console.log("🔑 Requires GOOGLE_GENERATIVE_AI_API_KEY environment variable\n");
+
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error("❌ Error: GOOGLE_GENERATIVE_AI_API_KEY is not set");
+    console.error("   Please set it in your .env.local file");
+    process.exit(1);
+  }
 
   console.log("Extracting content from data files...");
 

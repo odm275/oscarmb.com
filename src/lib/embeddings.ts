@@ -1,28 +1,15 @@
-import { pipeline } from "@xenova/transformers";
-
-// Global embedding pipeline instance (cached)
-let embeddingPipeline: any = null;
+import { google } from "@ai-sdk/google";
+import { embed } from "ai";
 
 /**
- * Initialize the embedding model (lazy loading)
- * This will download ~25MB on first run, then cache locally
- */
-async function initEmbeddingModel() {
-  if (!embeddingPipeline) {
-    embeddingPipeline = await pipeline(
-      "feature-extraction",
-      "Xenova/all-MiniLM-L6-v2",
-    );
-  }
-  return embeddingPipeline;
-}
-
-/**
- * Generate embedding using local Transformers.js model
- * This is completely free and runs locally - no API calls needed!
+ * Generate embedding using Google's text-embedding-004 model
+ * Uses the same API key as chat responses (GOOGLE_GENERATIVE_AI_API_KEY)
+ * Produces 768-dimensional vectors for semantic similarity
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const extractor = await initEmbeddingModel();
-  const output = await extractor(text, { pooling: "mean", normalize: true });
-  return Array.from(output.data);
+  const { embedding } = await embed({
+    model: google.embedding("text-embedding-004"),
+    value: text,
+  });
+  return embedding;
 }
