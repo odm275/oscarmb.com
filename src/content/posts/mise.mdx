@@ -64,7 +64,7 @@ I went with PostgreSQL on Railway—it satisfied both **reliable** and **nimble*
 **Limitation acknowledged:** Railway is excellent for rapid development, but for a truly production-critical system, managed PostgreSQL services (AWS RDS, Supabase, Neon) offer better reliability guarantees like automated backups, point-in-time recovery, and read replicas. For Mise's current scale and budget, Railway was the right trade-off.
 
 The database schema:
-![Mise Database Schema](/static/images/projects/mise/mise_db_schema.png)
+![Mise Database Schema](/static/img/projects/mise/mise_db_schema.png)
 
 ### Backend
 
@@ -178,17 +178,17 @@ Now my query is secure against incorrect inputs, and the input variable in the r
 
 If I send the wrong input to the server, TypeScript won't let me. Points for **reliability** ✅
 
-![Mise, Typed Prisma](/static/images/projects/mise/zodError.png)
+![Mise, Typed Prisma](/static/img/projects/mise/zodError.png)
 
 #### Backend In Practice
 
 Putting all these technologies together in **_Mise_**:
 
-![Mise, Typed Prisma](/static/images/projects/mise/typedPrisma.png)
+![Mise, Typed Prisma](/static/img/projects/mise/typedPrisma.png)
 
 Prisma with everything typed out of the box 🚀
 
-![Mise, Typed Input](/static/images/projects/mise/typedInput.png)
+![Mise, Typed Input](/static/img/projects/mise/typedInput.png)
 
 Zod typing my inputs 😎
 
@@ -228,7 +228,7 @@ For **_Mise_**, I mostly used strategies 1 and 3. Most queries are light enough 
 Large or complex forms in React often have performance issues. [React Hook Form](https://react-hook-form.com/) handles many forms in **_Mise_**.
 
 The order form Kitchen Managers use is a great example:
-![Mise, Big Form](/static/images/projects/mise/bigForm.png)
+![Mise, Big Form](/static/img/projects/mise/bigForm.png)
 
 With potentially 100+ inputs, re-rendering the entire form on every change would be noticeably slow 🐢. React Hook Form avoids this by using uncontrolled inputs and only re-rendering what's necessary.
 
@@ -242,13 +242,13 @@ Most state in **_Mise_** is server state (React Query) or form state (React Hook
 Here's what it looks like:
 
 Ordering
-![Mise, Kitchen Manager Ordering](/static/images/projects/mise/kmOrdering.png)
+![Mise, Kitchen Manager Ordering](/static/img/projects/mise/kmOrdering.png)
 
 Order Confirmation
-![Mise, Kitchen Manager Conf](/static/images/projects/mise/kmOrderConf.png)
+![Mise, Kitchen Manager Conf](/static/img/projects/mise/kmOrderConf.png)
 
 Order Success
-![Mise, Kitchen Manager Success](/static/images/projects/mise/kmOrderSucc.png)
+![Mise, Kitchen Manager Success](/static/img/projects/mise/kmOrderSucc.png)
 
 The challenge was collecting user information across different pages and representing it cohesively in state. The state needed to encapsulate:
 
@@ -258,7 +258,7 @@ The challenge was collecting user information across different pages and represe
 
 A Flux-like store fits this use case best—it encapsulates logic in one place and handles state updates via named events:
 
-![Mise, useState vs useReducer](/static/images/projects/mise/useStatevsuseReducer.png)
+![Mise, useState vs useReducer](/static/img/projects/mise/useStatevsuseReducer.png)
 
 The classic `useState` approach would scatter state updates across multiple components without named events. I opted for a Flux-like store with useReducer.
 
@@ -272,14 +272,14 @@ I narrowed my options to [useReducer](https://beta.reactjs.org/apis/react/useRed
 
 XState differs from Flux-like solutions. It requires describing every possible state combination, creating a state machine:
 
-![Mise, State Machine Prototype](/static/images/projects/mise/mise_state_machine.png)
+![Mise, State Machine Prototype](/static/img/projects/mise/mise_state_machine.png)
 Click [here](https://stately.ai/registry/editor/share/2590f3fd-c68d-401f-a3e5-4394c70a8e8e) for interactive version
 
 This adds safeguards: events can only transition between specific states, not arbitrary ones. XState centralizes all logic comprehensively and provides visualization tools.
 
 **Nuance:** useReducer with TypeScript discriminated unions can also prevent many impossible states at compile time—you can type your state and actions so TypeScript errors if you access invalid properties for a given state. However, useReducer doesn't provide runtime guarantees or the visual state machine tooling that XState offers.
 
-![Mise, State Machine Full](/static/images/projects/mise/xStateFull.png)
+![Mise, State Machine Full](/static/img/projects/mise/xStateFull.png)
 From [Stately video](https://www.youtube.com/watch?v=FrNXCJa5FLs&t=194s&ab_channel=Stately)
 
 Weighing the pros and cons:

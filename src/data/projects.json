@@ -4,7 +4,7 @@
       "name": "Mise",
       "description": "Full-stack Resource Planning solution centralizing inventory, order management, and projections for multi-location restaurant operations",
       "href": "/blog/mise",
-      "image": "/static/images/projects/mise/miseMainPic.png",
+      "image": "/static/img/projects/mise/miseMainPic.png",
       "tags": [
         "Next.js",
         "TypeScript",
