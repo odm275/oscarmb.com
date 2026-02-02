@@ -8,6 +8,7 @@ import Mermaid from "./Mermaid";
 import {
   Table as UITable,
   TableBody as UITableBody,
+  TableCaption as UITableCaption,
   TableCell as UITableCell,
   TableHead as UITableHead,
   TableHeader as UITableHeader,
@@ -72,12 +73,21 @@ const mdxComponents = {
   code: Code,
   Counter,
   Mermaid,
+  // Lowercase HTML element mappings
   table: Table,
   thead: TableHeaderSection,
   tbody: UITableBody,
   th: UITableHead,
   td: UITableCell,
   tr: UITableRow,
+  // PascalCase component names for MDX usage
+  Table,
+  TableHeader: TableHeaderSection,
+  TableBody: UITableBody,
+  TableHead: UITableHead,
+  TableRow: UITableRow,
+  TableCell: UITableCell,
+  TableCaption: UITableCaption,
 };
 
 // Create MDX component from Velite-compiled code
