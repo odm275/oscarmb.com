@@ -1,0 +1,360 @@
+---
+slug: enums-over-booleans
+publishedAt: 2026-01-25
+tags:
+  - Programming
+  - Typescript
+  - API Design
+draft: false
+title: Enums over Booleans
+summary: Often you want to model something after an enum, and not a boolean
+---
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+## The Problem
+
+Modeling states is hard.
+Booleans are a quick and dirty way to model states, but they are not the best way to model states.
+They make your code **more readable**, **prevent impossible state combinations**, and prevent complexity when extending them.
+Booleans, on the other hand, create ambiguity (e.g., process(true, false)), allow for impossible states (e.g., isShipped = true and isCancelled = true),
+and require complex conditional logic that is difficult to maintain, especially when mapping the API response to a user interface.
+
+---
+
+Let's look at a common scenario: A RESTAPI endpoint that returns the status of a customer's identity verification flow.
+A backend developer leaning on booleans might design a JSON response like this:
+
+```json
+{
+  "isStateCheckNeeded": true,
+  "selectedState": null,
+  "idMeURL": null,
+  "userEligible": false
+}
+```
+
+This design introduces several challenges:
+
+### Implicit Meaning
+
+The actual state of our application gets obfuscated for two reasons.
+Explaining the inherent ambiguity of modeling our application with booleans and and the truthiness of other attributes is going to require us to paint a mental picture in order to understand why some combinations even when valid are confusing.
+The second will speak to how typing properties as `boolean|null` confuses the meaning of the boolean type because a boolean type should be used to represent a dichotomy.
+
+#### Ambiguity when deriving states
+
+Say we are trying to derive the first screen in our application which is when the user checks if a state is valid in our api response.
+One can reasonably assume we just need `isStateCheckNeeded` to be true.
+
+```json
+{
+  "isStateCheckNeeded": true,
+  "selectedState": null,
+  "idMeURL": null,
+  "userEligible": false
+}
+```
+
+That seems to be good for our first screen. We can display the proper UI for that scenario.
+
+Then naturally we then consider what would the screen be if `isStateCheckNeeded` is false. What would that mean? Would that mean the user already selected a valid state?
+Not necessarily, currently the user is supposed to be able to back and change their selected states, so isStateCheckNeeded would have still be true then. Could `stateCheckNeeded` being false model
+when he user is eligible(userEligible is true)? Maybe, but userEligible seems like a better condition for modeling that. So what does `isStateCheckNeeded` being false mean? It is unclear.
+Maybe it is something we don't need to model, maybe it is an **impossible state**.
+
+#### Boolean Attributes aren't true binary dichotomies
+
+Booleans are proper to use when we are modeling binary dichotomies. Meaning when something can only be **strictly** `true` or `false` and has no other possibilities.
+However, when we declare a type like:
+
+```ts
+type IsStateCheckNeeded = boolean | null;
+```
+
+We know the state we are trying to represent isn't binary. `null` is representing a third state, and it introduces ambiguity into what it means.
+For example, does null mean the state check hasn't run yet or that it doesn't apply? The answer to "what does null really mean?" is almost always the name of a missing enum
+state.
+
+### The Risk of Invalid States
+
+Consider the following state:
+
+```json
+{
+  "isStateCheckNeeded": true, // the user must select a state to determine eligibility
+  "userEligible": true //the user is already eligible
+  ...restOfAttributes
+}
+```
+
+It takes a glance to see clearly see it is impossible for both `isStateCheckNeeded` to be `true` and `userEligible` to be `true` at the same time.
+
+Even though this scenario will never happen. The consumer nonetheless has to mentally them while discerning the combinations that are
+actually meaningful when deriving UI states.
+
+For a mental picture, lets'count the possible combinations one could generate from the api attributes to generate potential UI states.
+
+Assuming the properties we've been relying on to generate states. The formula to calculate the number of possible combinations is:
+
+```math
+Potential UI States =  isStateCheckNeeded * userEligible * idMeURL * userEligible
+```
+
+In our case given,
+
+```ts
+type isStateCheckNeeded = true | false | null;
+type selectedState = string | null;
+type userEligible = true | false | null;
+type idMeURL = string | null;
+```
+
+Then we can calculate:
+
+```math
+Potential UI States = 3 * 2 * 2 * 2 = 24
+```
+
+```math
+Potential UI States = 24
+```
+
+In real life, we're only ever dealing with 3-5 different screens depending on what edge cases we are trying to cover. Hence, most combinations of states can derive from these properties
+are noise that developers consuming the api must mentally filter out.
+
+### Scalability
+
+The more boolean flags(not just booleans, but any type from which we expected to derive its truthiness) we have, the more potential UI states we have.
+Hence, the more implicit meaning and impossible states that are introduced.
+To illustrate, say we hypothetically product asks for a new step in the flow, like "Awaiting Manual Review".
+With the current design, the backend team would likely add a new boolean flag, isAwaitingReview: boolean.
+Immediately, every client (Web, iOS, Android) must update its complex if/else logic to account for this new flag and consider **all of its possible potential interactions** with previous attributes(ex:isStateCheckNeeded, userEligible, etc.).
+In order to keep each meaningful state properly derived from its booleans.
+
+Referring back to our Total Combinations formula, we would be adding an additional term for each new attributes. Thus generally,
+
+```math
+Potential UI States = t1 * t2 * ... = tn
+```
+
+This type of growth is called a **combinatorial explosion**.
+
+It is a term used to describe multiplicative growth in the number of possible combinations when you add more parameters to a system.
+For reference, it grows faster than exponential growth.
+
+### Why Booleans Map Horribly to the UI
+
+When the frontend receives the boolean-based JSON above, the UI code becomes a tangled mess of if/else if/else statements. The developer is forced to write defensive code to interpret the boolean flags and prevent the display of impossible states.
+
+```jsx
+// ❌ Still a nightmare: the logic is brittle and order-dependent.
+
+function UserVerificationFlow({ isStateCheckNeeded, isUserEligible, idMeUrl }) {
+  // First, we must defensively check for impossible states.
+  // This state is not possible, but as a consumer of the API, one needs to consider this and all permutations of the flags in order to safeguard the UI.
+  // Even if the check is not needed, it is cognitive overload to consider.
+  if (isStateCheckNeeded && isUserEligible) {
+  }
+
+  // The order of this entire block is critical. If a developer moves this
+  // 'isUserEligible' check to the top, eligible users who still need a
+  // state check would see the wrong UI.
+
+  if (isStateCheckNeeded) {
+    return <StateSelector />;
+  }
+
+  // This condition is complex and has to check other flags to be sure.
+  else if (!isStateCheckNeeded && !!idMeUrl && !isUserEligible) {
+    return <VerifyIdentityButton url={idMeUrl} />;
+  }
+
+  // This check for eligibility must come *after* the other checks.
+  else if (isUserEligible) {
+    return <ApprovedMessage />;
+  }
+
+  // This "denied" state is defined by what it's NOT. It only triggers if all
+  // the previous checks fail. This is an incredibly fragile way to define a state.
+  else if (!isStateCheckNeeded && !idMeUrl && !isUserEligible) {
+    return <DeniedMessage />;
+  }
+
+  // If the data doesn't perfectly match one of the conditions above,
+  // we fall through to an error state.
+  else {
+    return <ErrorMessage>An unexpected error occurred.</ErrorMessage>;
+  }
+}
+```
+
+As you may be able to tell, the code is difficult to read and maintain. The reasons can be summarized as follows:
+
+1. Order Dependency: The entire component's logic relies on the specific sequence of the if/else if blocks. Reordering them would completely break the user experience.
+
+2. Redundant Logic: The same variables are checked repeatedly in different combinations throughout the chain, making it hard to refactor and easy to get wrong.
+
+3. High Maintenance Cost: To add a new state (e.g., "Awaiting Review"), a developer must carefully find the correct place to insert a new else if and potentially update the conditions in all the other blocks to prevent unintended overlaps.
+
+---
+
+## Solution: Enums
+
+Enums are a great tool when it comes to representing application state. They make the meaning of the api response obvious and furthermore,
+the UI code becomes much more readable and maintainable, the prevent impossible states, and prevent combinatorial explosion of potential states.
+
+#### The Enum Solution: Clean, Clear, and Concise ✨
+
+A smarter way is to treat the order status as one clear state. This is conceptually an enum. This is typically represented as a string.
+
+Here's the refactored, enum-style API response:
+
+```json
+{
+  "data": {
+    "checkPSEEligibilityGuest": {
+      "uiState": "VERIFY_IDENTITY",
+      "context": {
+        "idMeUrl": "https://some-verification-url.com/xyz"
+      }
+    }
+  }
+}
+```
+
+The possible values for uiState are a fixed set, defined and documented by the API: **CHECK_STATE**, **VERIFY_IDENTITY**, **ID_APPROVED**, **ID_DENIED**, **BUY_LIMIT_REACHED**, etc.
+
+Now, look how clean and robust the UI code becomes:
+
+```jsx
+function UserVerificationFlow({ uiState, context }) {
+  switch (uiState) {
+    case "CHECK_STATE":
+      return <StateSelector />;
+
+    case "VERIFY_IDENTITY":
+      return <VerifyIdentityButton url={context.idMeUrl} />;
+
+    case "ID_APPROVED":
+      return <ApprovedMessage />;
+
+    case "ID_DENIED":
+      return <DeniedMessage />;
+    case "BUY_LIMIT_REACHED":
+      return <BuyLimitReachedMessage />;
+
+    default:
+      // Gracefully handle any states the UI doesn't know about yet
+      return null;
+  }
+}
+```
+
+The advantages are immediate:
+
+Clarity and Readability: The code is self-documenting. The switch statement clearly handles each defined state without any complex, order-dependent logic.
+
+Safety & Simplicity: The API guarantees a single, valid state from the list of possibilities. The frontend code is no longer responsible for interpreting boolean combinations or handling impossible contradictions. It simply reacts to the state it's given.
+
+Future-Proofing: When the business decides to add a new "Awaiting Manual Review" step, the API adds AWAITING_REVIEW to the list of possible values. The switch statement's default case can handle it gracefully until the UI is updated, and it's obvious where to add the new case.
+
+#### When is a Boolean Okay?
+
+Booleans aren't evil -- they are essential. The key is using them for what they're designed for: representing true dichotomies, not descriptive states. A boolean should represent a simple true/false fact that has no other possibilities.
+
+To decide, ask yourself these three questions:
+
+1. Does this property describe what something is (its status or condition), or does it represent a simple on/off fact about it?
+
+2. If this property is false, does that imply one single alternative, or could false represent multiple different conditions?
+
+3. Do you feel the need to add null to represent a third state like "unknown" or "pending"?
+
+A "yes" to that last question is an immediate red flag 🚩. The moment you see a property that can be true | false | null, you've discovered a state that was never truly binary. This "tri-state boolean" is a confession that the data model is fighting its own limitations. The null is a workaround to represent a third state, and it introduces ambiguity: does null mean the check hasn't run, or that it doesn't apply? The answer to "what does null really mean?" is almost always the name of your missing enum state.
+
+Let's apply this test directly to the booleans from our checkPSEEligibilityGuest example to see why they are problematic.
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px]">Use Case</TableHead>
+      <TableHead>Property</TableHead>
+      <TableHead>Analysis</TableHead>
+      <TableHead>Verdict</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>
+        <strong>The Trap ❌</strong>
+      </TableCell>
+      <TableCell>
+        <code>userEligible: false</code>
+      </TableCell>
+      <TableCell>
+        This looks like a simple fact, but it fails our test. The value{" "}
+        <code>false</code> is ambiguous. It doesn't tell us <em>why</em> the
+        user isn't eligible. Are they denied? Do they need to select a state
+        first? Do they need to verify their identity? This is a{" "}
+        <strong>descriptive state disguised as a boolean</strong>.
+      </TableCell>
+      <TableCell>
+        <strong>Should be an enum</strong> like{" "}
+        <code>uiState: "ID_DENIED"</code> or <code>uiState: "CHECK_STATE"</code>
+        .
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>
+        <strong>The Trap ❌</strong>
+      </TableCell>
+      <TableCell>
+        <code>isStateCheckNeeded: false</code>
+      </TableCell>
+      <TableCell>
+        Similarly, <code>false</code> is not a final answer. It just tells us
+        that one specific step isn't needed right now. The user's actual status
+        could be that they are approved, denied, or waiting for identity
+        verification. This boolean hides the true state of the user in the flow.
+      </TableCell>
+      <TableCell>
+        This is a sign that the entire flow is a <strong>state machine</strong>,
+        not a collection of binary facts.
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>
+        <strong>Good ✅</strong>
+      </TableCell>
+      <TableCell>
+        <code>inventoryAvailable: true</code>
+      </TableCell>
+      <TableCell>
+        Let's imagine a boolean from our example. This is a{" "}
+        <strong>true dichotomy</strong>. For the selected item and store,
+        inventory is either available for promise or it's not.{" "}
+        <code>false</code> means one simple thing. It doesn't need to explain
+        the complex reasons of supply chain logistics.
+      </TableCell>
+      <TableCell>
+        <strong>Perfect for a boolean.</strong>
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Final Thoughts
+
+Picking the right data structure is key to writing clean, easy-to-maintain code. While a boolean might seem like the quickest solution for an API flag, it often introduces ambiguity and fragility that cascades into complex UI logic.
+
+By representing distinct states with an enum (or a descriptive string in a JSON payload), you make your system more expressive, safer, and easier for everyone to work with.
+

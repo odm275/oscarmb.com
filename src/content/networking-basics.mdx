@@ -1,0 +1,39 @@
+---
+slug: networking-basics
+publishedAt: 2026-02-01
+tags:
+  - Networking
+draft: true
+title: Networking Basics. 
+summary: Networking Basics are the basics of networking.
+---
+
+# Networking Basics
+
+## Definition
+
+When sending mail in the real world, we need a From and To address. In the digital world, we need a Source and Destination address.
+
+WHen sending data over the network, the rules are called Internet Protocol (IP). Hence, why we call computer addresses IP addresses.
+
+Computer are going to send packets of data to each other. Each packet will contain metadata such as the source and destination address, 
+and the data itself. The IP Header is the metadata that is sent with the packet.
+
+```
+IP Header:
+- Source Address
+- Destination Address
+- Protocol
+- Data
+```
+
+The IP Header is a fixed size of 20 bytes.
+
+TCP stands for Transmission Control Protocol. It is a protocol that is used to send data over the network.
+
+1. IP Header. Transport Layer
+2. TCP Header: Sequence Number(Ex: Sending a file of 1000 bytes, the sequence number will be 1000). Network Layer
+3. Application Data: The actual data that is being sent. Ex: HTTP Request. Application Layer
+
+
+

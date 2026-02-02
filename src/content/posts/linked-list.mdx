@@ -1,0 +1,108 @@
+---
+slug: single-linked-list
+publishedAt: 2022-09-19
+tags:
+  - Javascript
+  - React
+draft: true
+title: Single Linked List. 
+summary: Single Linked List are a data structure that is a linear collection of nodes that are linked to each other.
+---
+
+# Single Linked List
+
+## Definition
+
+A single linked list is a data structure that is a linear collection of nodes that are linked to each other.
+
+## Implementation
+
+First we will need a Node class that will represent each node in the list.
+
+```javascript
+class ListNode {    
+    constructor (val) {
+        this.val = val;
+        this.next = null;
+    } 
+}
+```
+
+Now we will need a LinkedList class that will represent the list itself.
+
+```javascript
+class LinkedList {
+    constructor() {
+        // Init the list with a 'dummy' node which makes 
+        // removing a node from the beginning of list easier.
+        this.head = new ListNode(-1);
+        this.tail = this.head;
+    }
+
+    // O(1) time complexity
+    insertEnd(val) {
+        this.tail.next = new ListNode(val);
+        this.tail = this.tail.next; 
+    }
+
+    // O(n) time complexity
+    remove(index) {
+        let i = 0;
+        let curr;
+        curr = this.head;
+        while(i < index && curr != null) {
+            i++;
+            curr = curr.next;
+        }
+
+        // Remove the node ahead of curr
+        if (curr && curr.next) {
+            if (curr.next == this.tail) {
+                this.tail = curr;
+            }
+            curr.next = curr.next.next;
+        }
+    }
+
+    // O(n) time complexity
+    print() { 
+        let curr = this.head.next;
+        let s = "";
+        while (curr != null) {
+            s+= curr.val + "->";     
+            curr = curr.next;
+        }
+        console.log(s);
+    }
+}
+```
+
+For example, when reversing a linked list:
+```javascript
+// class ListNode {
+//     constructor(val = 0, next = null) {
+//         this.val = val;
+//         this.next = next;
+//     }
+// }
+class Solution {
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    reverseList(head) {
+        let prev = null;
+        let curr = head;
+
+        while(curr) {
+            let temp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = temp;
+        }
+        return prev;
+    }
+}
+```
+
+Think of the equal sign `=` as the arrow or pointer of a node.
