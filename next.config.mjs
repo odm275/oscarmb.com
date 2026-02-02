@@ -9,18 +9,7 @@ if (!process.env.VELITE_STARTED && (isDev || process.argv.includes("build"))) {
 }
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "oscarmejiabautista.com",
-        port: "",
-        pathname: "/images/**",
-      },
-    ],
-  },
-};
+const nextConfig = {};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:

@@ -19,18 +19,18 @@ export async function sendEmail(data: ContactFormInputs) {
 
   try {
     const { name, email, message } = result.data;
+
     const { data, error } = await resend.emails.send({
-      from: `me@oscarmejiabautista.com <me@oscarmejiabautista.com>`,
-      to: "me@oscarmejiabautista.com",
+      from: "Contact Form <noreply@updates.oscarmb.com>",
+      to: "oscarmejiaweb@gmail.com",
       replyTo: [email],
-      cc: [email],
       subject: `New message from ${name}!`,
       text: `Name:\n${name}\n\nEmail:\n${email}\n\nMessage:\n${message}`,
       // react: ContactFormEmail({ name, email, message }),
     });
 
     if (!data || error) {
-      throw new Error("Failed to send email!");
+      throw new Error(error?.message || "Failed to send email!");
     }
 
     return { success: true };
