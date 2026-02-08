@@ -9,7 +9,6 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "embeddings": "tsx scripts/generate-embeddings.ts",
-    "extract": "tsx scripts/extract-content.ts",
     "resume:tex": "tsx scripts/generate-resume-tex.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

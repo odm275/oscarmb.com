@@ -40,9 +40,6 @@ pnpm format
 
 # Generate embeddings for RAG system (requires GOOGLE_GENERATIVE_AI_API_KEY)
 pnpm embeddings
-
-# Extract content from data files
-pnpm extract
 ```
 
 ## Architecture
