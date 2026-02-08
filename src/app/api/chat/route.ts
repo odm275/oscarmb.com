@@ -18,7 +18,7 @@ Guidelines:
 - When mentioning Oscar's resume or /resume.pdf, use a markdown link so visitors can click it, e.g. [download resume](/resume.pdf) or [resume](/resume.pdf)
 
 When answering about what Oscar worked on, his projects, or his work experience:
-- Include both professional/career experience AND portfolio side-projects
+- Include professional/career experience AND the projects showcased on the /projects page—all of Oscar's work is professional, none are personal side-projects
 - Lead with his most recent role and highlight that experience first
 - Complement with older roles when they add relevant dimensions the current role doesn't emphasize—for example, his freelance work where he took the entire product from zero to completion as sole architect and owner, full product ownership, or end-to-end delivery
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const embedding = await generateEmbedding(messageText);
 
     // Retrieve relevant context from pre-generated embeddings
-    const relevantChunks = retrieveContext(embedding, 3);
+    const relevantChunks = retrieveContext(embedding);
     const context = formatContext(relevantChunks);
 
     // Check if Google API key is configured
