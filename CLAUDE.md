@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a personal portfolio website built with Next.js 14, featuring an AI chatbot powered by RAG (Retrieval-Augmented Generation), a blog system, and dynamic content management.
 
 **Tech Stack:**
+
 - Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS + Shadcn UI
@@ -61,17 +62,20 @@ The AI chatbot uses **Google's embedding and generation APIs** with runtime RAG:
 6. **Chat API** (`src/app/api/chat/route.ts`): Embeds user queries, retrieves context, and streams responses via Gemini
 
 **Key characteristics:**
+
 - All LLM-related operations use Google's APIs for consistency
 - Both offline generation (build time) and online queries (runtime) use the same embedding model
 - No vector database needed - embeddings stored in JSON
 - Context retrieval happens in-memory using cosine similarity
 
 **Cost breakdown:**
+
 - Embedding generation: ~$0.0002 per build (~15 chunks)
 - Runtime query embedding: ~$0.00001 per query
 - Chat responses: **FREE** for 1500 requests/day with Google Gemini 2.5 Flash Lite
 
 **To update chatbot knowledge:**
+
 1. Modify content in `src/data/*.json` files
 2. Run `pnpm embeddings` to regenerate embeddings.json
 3. Rebuild and deploy
@@ -82,17 +86,17 @@ The embedding system uses **semantic/logical chunking** rather than fixed-size s
 
 **Chunk types and granularity:**
 
-| Source | Granularity | Slug Pattern | Example |
-|--------|-------------|--------------|---------|
-| Homepage | 1 chunk total | `/` | Intro text + welcome message |
-| Privacy Policy | 1 chunk total | `/privacy` | Full policy text |
-| Projects | 1 per project | `projects:{name}` | Project description + tags + links |
-| Career | 1 per job | `career:{company}-{title}` | Job title + dates + bullet points |
-| Socials | 1 chunk total | `socials:links` | All contact methods |
-| Navigation | 1 chunk total | `navigation:routes` | Site page descriptions |
-| Resume Skills | 1 chunk | `resume:skills` | All technical skills |
-| Resume Experience | 1 per job | `resume:{company}` | Role + responsibilities |
-| Resume Overview | 1 chunk | `resume:overview` | Contact info + summary |
+| Source            | Granularity   | Slug Pattern               | Example                            |
+| ----------------- | ------------- | -------------------------- | ---------------------------------- |
+| Homepage          | 1 chunk total | `/`                        | Intro text + welcome message       |
+| Privacy Policy    | 1 chunk total | `/privacy`                 | Full policy text                   |
+| Projects          | 1 per project | `projects:{name}`          | Project description + tags + links |
+| Career            | 1 per job     | `career:{company}-{title}` | Job title + dates + bullet points  |
+| Socials           | 1 chunk total | `socials:links`            | All contact methods                |
+| Navigation        | 1 chunk total | `navigation:routes`        | Site page descriptions             |
+| Resume Skills     | 1 chunk       | `resume:skills`            | All technical skills               |
+| Resume Experience | 1 per job     | `resume:{company}`         | Role + responsibilities            |
+| Resume Overview   | 1 chunk       | `resume:overview`          | Contact info + summary             |
 
 **Content enrichment pattern:**
 
@@ -101,26 +105,28 @@ Chunks aren't raw data - they're templated into natural language with intentiona
 ```typescript
 // Career chunk template - repeats key terms for better semantic matching
 `I worked at ${job.name} as a ${job.title} from ${period}. ${descriptions}. My role at ${job.name} was ${job.title}.`
-
 // Project chunk template - repeats technologies
-`Project name: ${project.name}. ${project.description}. Technologies used: ${project.tags.join(", ")}. I built ${project.name} using ${project.tags.join(", ")}.`
+`Project name: ${project.name}. ${project.description}. Technologies used: ${project.tags.join(", ")}. I built ${project.name} using ${project.tags.join(", ")}.`;
 ```
 
 **Why this approach works:**
+
 - Questions naturally map to chunks ("Tell me about CVS" → CVS career chunk)
 - Each chunk is self-contained and understandable without context
 - Content is naturally paragraph-sized, no need for splitting or overlap
 - Semantic boundaries preserve meaning better than arbitrary character limits
 
 **When to reconsider:**
+
 - If adding long-form content (multi-page blog posts), consider splitting by heading/section
 - For very large documents, use fixed-size chunks (500-1000 tokens) with 10-20% overlap
 
 ### Data-Driven Content
 
 Most content is defined in `src/data/*.json` files:
+
 - `home.json`: Homepage introduction and hero section
-- `career.json`: Work experience timeline
+- `career.json`: Work experience timeline (site UI and source of truth for resume experience; `public/resume.tex` is generated from it via `pnpm resume:tex`—only the EXPERIENCE section is generated; skills and header remain in `public/resume-template.tex`)
 - `projects.json`: Project cards with descriptions, tags, and links
 - `socials.json`: Social media links
 - `routes.json`: Navigation structure
@@ -139,6 +145,7 @@ Most content is defined in `src/data/*.json` files:
 - **Layout components**: `Header`, `Footer`, `Providers` (theme, toast)
 
 **App Router pages:**
+
 - `/` - Homepage with introduction
 - `/projects` - Project showcase
 - `/blog` - Blog posts
@@ -151,25 +158,30 @@ Most content is defined in `src/data/*.json` files:
 ## Key Patterns
 
 ### Path Aliases
+
 Use `@/` to import from `src/`:
+
 ```typescript
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 ```
 
 ### TypeScript Configuration
+
 - Uses strict mode
 - ESNext module resolution with bundler strategy
 - JSON imports enabled for embedding data
 - ts-node configured for CommonJS for scripts
 
 ### Styling
+
 - Tailwind CSS with custom configuration
 - CSS variables for theming (light/dark mode)
 - Calistoga font for headings (`font-serif` class)
 - Inter font for body text (`font-sans` class)
 
 ### Runtime Configuration
+
 The chat API uses the default Node runtime. Edge runtime is not required since all AI operations use Google's APIs via the Vercel AI SDK.
 
 ## Important Notes

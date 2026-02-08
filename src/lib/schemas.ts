@@ -38,6 +38,7 @@ const experience = z.object({
   logo: z.string(),
   start: z.string(),
   end: z.string().optional(),
+  location: z.string().optional(),
   description: z.array(z.string()).optional(),
   links: z.array(iconLink).optional(),
 });

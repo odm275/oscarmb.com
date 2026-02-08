@@ -36,7 +36,7 @@ function extractHomepageContent(): ContentChunk[] {
   const filePath = path.join(process.cwd(), "src/data/home.json");
   const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
-  const content = `${data.introduction.greeting} ${data.introduction.description}. ${data.introduction.chatPrompt}. ${data.introduction.escalation.text} ${data.introduction.escalation.linkText} (${data.escalationLink.href}) ${data.introduction.escalation.suffix}. I'm a self-taught senior software engineer with full-stack experience based in Houston, Texas. This is my portfolio homepage with introduction and welcome message. You can chat with Oscar AI for questions and answers. For escalations, connect with me on LinkedIn.`;
+  const content = `${data.introduction.greeting} ${data.introduction.description}. ${data.introduction.chatPrompt}. ${data.introduction.escalation.text} ${data.introduction.escalation.linkText} (${data.escalationLink.href}) ${data.introduction.escalation.suffix}. I'm a  senior software engineer with full-stack experience based in Houston, Texas. This is my portfolio homepage with introduction and welcome message. You can chat with Oscar AI for questions and answers. For escalations, connect with me on LinkedIn.`;
 
   return [
     {
@@ -107,7 +107,9 @@ function extractCareerData(): ContentChunk[] {
   const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
   return data.career.map((job: any) => {
-    const period = job.end ? `${job.start} to ${job.end}` : `${job.start} to present`;
+    const period = job.end
+      ? `${job.start} to ${job.end}`
+      : `${job.start} to present`;
     const descriptions = job.description.join(" ");
 
     const content = `I worked at ${job.name} as a ${job.title} from ${period}. ${descriptions}. My role at ${job.name} was ${job.title}. This experience contributed to my professional growth as a software engineer.`;
@@ -167,7 +169,9 @@ function extractNavigationData(): ContentChunk[] {
   const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
   const navigationContent = data.routes
-    .map((route: any) => `'${route.path}' - ${route.name}: ${route.description}`)
+    .map(
+      (route: any) => `'${route.path}' - ${route.name}: ${route.description}`,
+    )
     .join(" | ");
 
   const externalLinks = data.externalLinks
@@ -241,9 +245,7 @@ function extractResumeContent(): ContentChunk[] {
       .join(". ");
 
     // Extract specific skill categories from the raw LaTeX
-    const languagesMatch = skillsMatch[1].match(
-      /Languages\}\s*&\s*([^\\]+)/,
-    );
+    const languagesMatch = skillsMatch[1].match(/Languages\}\s*&\s*([^\\]+)/);
     const frontendMatch = skillsMatch[1].match(/Frontend\}\s*&\s*([^\\]+)/);
     const backendMatch = skillsMatch[1].match(/Backend\}\s*&\s*([^\\]+)/);
     const toolsMatch = skillsMatch[1].match(/Tools\}\s*&\s*([^\\]+)/);
@@ -313,7 +315,9 @@ function extractResumeContent(): ContentChunk[] {
 async function generateEmbeddings(): Promise<void> {
   console.log("🚀 Starting embedding generation with Google AI");
   console.log("📦 Using model: gemini-embedding-001 (768 dimensions)");
-  console.log("🔑 Requires GOOGLE_GENERATIVE_AI_API_KEY environment variable\n");
+  console.log(
+    "🔑 Requires GOOGLE_GENERATIVE_AI_API_KEY environment variable\n",
+  );
 
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error("❌ Error: GOOGLE_GENERATIVE_AI_API_KEY is not set");
@@ -355,11 +359,17 @@ async function generateEmbeddings(): Promise<void> {
 
   // Write embeddings to file
   const outputPath = path.join(process.cwd(), "src/data/embeddings.json");
-  fs.writeFileSync(outputPath, JSON.stringify(embeddingsWithVectors, null, 2), "utf-8");
+  fs.writeFileSync(
+    outputPath,
+    JSON.stringify(embeddingsWithVectors, null, 2),
+    "utf-8",
+  );
 
   console.log(`\nEmbeddings saved to: ${outputPath}`);
   console.log(`Total chunks: ${embeddingsWithVectors.length}`);
-  console.log(`File size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`);
+  console.log(
+    `File size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`,
+  );
 }
 
 // Run the script
@@ -367,4 +377,3 @@ generateEmbeddings().catch((error) => {
   console.error("Failed to generate embeddings:", error);
   process.exit(1);
 });
-

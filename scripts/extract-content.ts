@@ -34,7 +34,7 @@ function extractHomepageContent(): ContentChunk[] {
         contentType: "page",
         enrichment: [
           "This is my portfolio homepage with introduction and welcome message",
-          "I'm a self-taught senior software engineer with full-stack experience based in Houston, Texas",
+          "I'm a senior software engineer with full-stack experience based in Houston, Texas",
           "You can chat with Oscar AI for questions and answers",
           "For escalations, connect with me on LinkedIn",
           "This site showcases my projects and career experience",

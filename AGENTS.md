@@ -13,9 +13,11 @@ TypeScript is required; favor server components unless interactivity demands `"u
 `npm run extract` parses MDX/blog content. Guard secrets by using `dotenv` and never committing `.env*`. When editing MDX, keep assets in `public/blog/<slug>/` and update `src/data` entries if metadata changes. Verify Resend email templates inside `src/components/email` before deploying.
 
 ## Resume PDF Generation
-The resume source lives at `public/resume.tex` (LaTeX format). When updating the resume:
+Experience content is sourced from `src/data/career.json`. The file `public/resume.tex` is generated from it (EXPERIENCE section only; preamble, SKILLS, and header stay in `public/resume-template.tex`). When updating the resume:
 
-1. **Prerequisites**: Install a LaTeX distribution (macOS: `brew install --cask mactex-no-gui` or install BasicTeX)
-2. **Compile**: Run `pdflatex -output-directory=public public/resume.tex` to generate `public/resume.pdf`
-3. **Update embeddings**: Run `npm run embeddings` to regenerate chat AI context with the latest resume content
-4. **Commit both files**: Always commit `resume.tex` and `resume.pdf` together to keep them in sync
+1. **Edit** `src/data/career.json` (job titles, dates, bullets, optional `location` per job).
+2. **Regenerate LaTeX**: Run `pnpm resume:tex` to write `public/resume.tex` from the template and career data.
+3. **Prerequisites**: Install a LaTeX distribution (macOS: `brew install --cask mactex-no-gui` or install BasicTeX).
+4. **Compile**: Run `pdflatex -output-directory=public public/resume.tex` to generate `public/resume.pdf`.
+5. **Update embeddings**: Run `pnpm embeddings` to regenerate chat AI context with the latest resume content.
+6. **Commit**: Commit `career.json`, `resume.tex`, and `resume.pdf` together to keep them in sync.
