@@ -112,7 +112,7 @@ function extractCareerData(): ContentChunk[] {
       : `${job.start} to present`;
     const descriptions = job.description.join(" ");
 
-    const content = `I worked at ${job.name} as a ${job.title} from ${period}. ${descriptions}. My role at ${job.name} was ${job.title}. This experience contributed to my professional growth as a software engineer.`;
+    const content = `I worked at ${job.name} as a ${job.title} from ${period}. ${descriptions}. My role at ${job.name} was ${job.title}. Projects and work I did at ${job.name} are part of my professional experience as a software engineer.`;
 
     return {
       slug: `career:${toKebabCase(job.name)}-${toKebabCase(job.title)}`,
@@ -303,7 +303,7 @@ function extractResumeContent(): ContentChunk[] {
   chunks.push({
     slug: "resume:overview",
     title: "Resume - Overview",
-    content: `${name}'s resume overview. Contact: ${cleanLatex(contactInfo)}. I am a Senior Software Engineer based in Houston, TX. US Citizen. My resume is available for download at /resume.pdf. The resume contains my technical skills, work experience at CVS Health, Freelance projects, and Poetic agency work.`,
+    content: `${name}'s resume overview. Contact: ${cleanLatex(contactInfo)}. I am a Senior Software Engineer based in Houston, TX. US Citizen. My resume is available for download: [resume](/resume.pdf). The resume contains my technical skills, work experience at CVS Health, Freelance projects, and Poetic agency work.`,
   });
 
   return chunks;

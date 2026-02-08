@@ -49,12 +49,25 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   return dotProduct / magnitude;
 }
 
+/** Career slugs in recency order (newest first). Used to order career chunks in context. */
+const CAREER_SLUG_RECENCY_ORDER = [
+  "career:cvs-health-co-branding-brand-senior-software-engineer",
+  "career:freelance-full-stack-engineer",
+  "career:poetic-software-developer",
+] as const;
+
+function careerRecencyRank(slug: string): number {
+  const idx = CAREER_SLUG_RECENCY_ORDER.indexOf(slug as (typeof CAREER_SLUG_RECENCY_ORDER)[number]);
+  return idx === -1 ? CAREER_SLUG_RECENCY_ORDER.length : idx;
+}
+
 /**
- * Retrieve the most relevant content chunks for a query
+ * Retrieve the most relevant content chunks for a query.
+ * Career chunks in the result are ordered by recency (newest first) so the model sees current experience first.
  */
 export function retrieveContext(
   queryEmbedding: number[],
-  topK: number = 3,
+  topK: number = 5,
 ): { content: string; title: string; slug: string; score: number }[] {
   const embeddings = loadEmbeddings();
 
@@ -67,8 +80,16 @@ export function retrieveContext(
   // Sort by score (highest first) and take top K
   const topResults = scored.sort((a, b) => b.score - a.score).slice(0, topK);
 
+  // Order career chunks by recency (newest first) so experience answers lead with current role
+  const ordered = [...topResults].sort((a, b) => {
+    const aCareer = careerRecencyRank(a.slug);
+    const bCareer = careerRecencyRank(b.slug);
+    if (aCareer !== bCareer) return aCareer - bCareer;
+    return b.score - a.score;
+  });
+
   // Return without the embedding vectors (they're large)
-  return topResults.map(({ embedding, ...rest }) => rest);
+  return ordered.map(({ embedding, ...rest }) => rest);
 }
 
 /**
