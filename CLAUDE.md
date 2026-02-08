@@ -73,8 +73,8 @@ The AI chatbot uses **Google's embedding and generation APIs** with runtime RAG:
 
 **To update chatbot knowledge:**
 
-1. Modify content in `src/data/*.json` files
-2. Run `pnpm embeddings` to regenerate embeddings.json
+1. Modify content in `src/data/*.json` files (or `src/data/privacy.md`, `public/resume.tex`)
+2. Run `pnpm embeddings` to regenerate embeddings.json (or commit the changed files—the pre-commit hook will run embeddings and stage `src/data/embeddings.json` automatically)
 3. Rebuild and deploy
 
 ### Chunking Strategy
