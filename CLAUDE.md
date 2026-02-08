@@ -11,7 +11,7 @@ This is a personal portfolio website built with Next.js 14, featuring an AI chat
 - TypeScript
 - Tailwind CSS + Shadcn UI
 - Google Gemini 2.5 Flash Lite (chat responses - FREE tier: 1500 requests/day)
-- Google text-embedding-004 (embeddings - 768 dimensions)
+- Google gemini-embedding-001 (embeddings - 768 dimensions via outputDimensionality)
 - Vercel AI SDK v6
 - Resend (email)
 - pnpm (package manager)
@@ -51,8 +51,8 @@ pnpm extract
 The AI chatbot uses **Google's embedding and generation APIs** with runtime RAG:
 
 1. **Content sources** (`src/data/*.json`): Personal data stored as JSON files (home, career, projects, socials, routes)
-2. **Embedding generation** (`scripts/generate-embeddings.ts`): Extracts and embeds content using **Google's text-embedding-004**
-   - Model: `text-embedding-004` (768-dimensional embeddings)
+2. **Embedding generation** (`scripts/generate-embeddings.ts`): Extracts and embeds content using **Google's gemini-embedding-001**
+   - Model: `gemini-embedding-001` (768-dimensional embeddings via outputDimensionality)
    - Requires `GOOGLE_GENERATIVE_AI_API_KEY` environment variable
    - Run with: `pnpm embeddings`
 3. **Storage** (`src/data/embeddings.json`): Pre-generated embeddings stored as JSON, loaded at runtime
@@ -177,7 +177,7 @@ The chat API uses the default Node runtime. Edge runtime is not required since a
 - **Package manager**: This project uses pnpm. Always use `pnpm install`, not npm or yarn.
 - **Google API key required**: Both embeddings and chat responses use Google's APIs - requires `GOOGLE_GENERATIVE_AI_API_KEY`
 - **Chat responses are FREE**: Google Gemini 2.5 Flash Lite offers 1500 free requests/day
-- **Embeddings are cheap**: Google's text-embedding-004 costs ~$0.00001 per 1K tokens
+- **Embeddings are cheap**: Google's gemini-embedding-001 costs ~$0.00001 per 1K tokens
 - **Embeddings file**: The embeddings.json file is generated, don't edit manually. Regenerate with `pnpm embeddings` after data changes.
 - **Script runner**: Uses `tsx` for running TypeScript scripts.
 - **Environment variables**: See `.env.example` for required variables. Use `.env.local` for development.

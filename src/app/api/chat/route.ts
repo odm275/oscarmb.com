@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Embed the user's query using Google's text-embedding-004
+    // Embed the user's query using Google's gemini-embedding-001
     const embedding = await generateEmbedding(messageText);
 
     // Retrieve relevant context from pre-generated embeddings

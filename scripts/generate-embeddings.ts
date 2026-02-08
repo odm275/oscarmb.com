@@ -312,7 +312,7 @@ function extractResumeContent(): ContentChunk[] {
  */
 async function generateEmbeddings(): Promise<void> {
   console.log("🚀 Starting embedding generation with Google AI");
-  console.log("📦 Using model: text-embedding-004 (768 dimensions)");
+  console.log("📦 Using model: gemini-embedding-001 (768 dimensions)");
   console.log("🔑 Requires GOOGLE_GENERATIVE_AI_API_KEY environment variable\n");
 
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
