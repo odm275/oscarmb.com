@@ -25,6 +25,8 @@ export default function ChatPrompts({ onPromptClick }: ChatPromptsProps) {
   const [randomPrompts, setRandomPrompts] = useState<string[]>([]);
 
   useEffect(() => {
+    // Intentional: randomize only on the client to avoid hydration mismatch
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRandomPrompts(getRandomPrompts(allPrompts, 3));
   }, []);
 

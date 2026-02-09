@@ -103,7 +103,9 @@ interface MDXRendererProps {
   components?: Record<string, React.ComponentType<unknown>>;
 }
 
+/* eslint-disable react-hooks/static-components -- Component is memoized via useMemo in useMDXComponent */
 export function MDXRenderer({ code, components = {} }: MDXRendererProps) {
   const Component = useMDXComponent(code);
   return <Component components={{ ...mdxComponents, ...components }} />;
 }
+/* eslint-enable react-hooks/static-components */

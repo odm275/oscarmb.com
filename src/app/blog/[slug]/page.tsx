@@ -20,8 +20,12 @@ export function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const post = getPostBySlug(slug);
 
   if (!post) {
@@ -41,8 +45,12 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function Post({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function Post({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const post = getPostBySlug(slug);
 
   if (!post) {
