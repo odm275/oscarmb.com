@@ -28,3 +28,13 @@ Experience content is sourced from `src/data/career.json`. The file `public/resu
 4. **Compile**: Run `pdflatex -output-directory=public public/resume.tex` to generate `public/resume.pdf`.
 5. **Update embeddings**: Run `pnpm embeddings` to regenerate chat AI context with the latest resume content (or rely on the pre-commit hook when you commit).
 6. **Commit**: Commit `career.json`, `resume.tex`, and `resume.pdf` together to keep them in sync.
+
+## Skills
+Skill-specific guidance is defined in `.cursor/skills/**/SKILL.md`.
+
+Current repository-local skill:
+- `.cursor/skills/react-typescript-fp-practices/SKILL.md`
+
+Rules:
+- Read the relevant `SKILL.md` when the task matches that skill.
+- In case of conflict, repository-wide rules in `AGENTS.md` take precedence.
