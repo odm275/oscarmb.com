@@ -1,10 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-The site runs on Next.js 14 App Router. Pages, layouts, and route handlers live under `src/app` (e.g., `blog`, `projects`, `api`). Shared UI and Radix-based primitives are in `src/components`, while cross-cutting logic sits in `src/lib`, data constants in `src/data`, and React contexts in `src/contexts`. Static assets belong in `public/`, and automation scripts reside in `scripts/` (executed with `ts-node`).
+The site runs on Next.js 14 App Router. Pages, layouts, and route handlers live under `src/app` (e.g., `blog`, `projects`, `api`). Shared UI and Radix-based primitives are in `src/components`, while cross-cutting logic sits in `src/lib`, data constants in `src/data`, and React contexts in `src/contexts`. Static assets belong in `public/`, automation scripts reside in `scripts/` (executed with `tsx`), and operational/project documentation lives in `docs/`.
 
 ## Build, Test, and Development Commands
 Use `npm run dev` for a hot-reloading local server on all interfaces. `npm run build` compiles the production bundle. `npm run lint` enforces Next.js/ESLint rules, and `npm run format` applies Prettier with the Tailwind plugin. Call `npm run start` to serve the optimized build.
+
+## Documentation Requirements
+Every non-trivial code, automation, or configuration change must be documented in the same working session. Required updates:
+
+1. Update or add a focused runbook in `docs/` for behavior changes (for example, new scripts, automations, or operational workflows).
+2. If developer-facing commands or workflows change, update `README.md` accordingly.
+
+Use git history/PR history as the source of truth for chronological change tracking.
+Do not treat code-only changes as complete until corresponding documentation is updated.
 
 ## Coding Style & Naming Conventions
 TypeScript is required; favor server components unless interactivity demands `"use client"`. Follow functional component patterns, camelCase for functions/variables, and PascalCase for components and context providers. Tailwind classes should be organized with `clsx`/`cva` helpers; extract reusable variants into `src/lib`. Two-space indentation and trailing commas come from Prettier—do not hand-format files. Keep MDX frontmatter keys lowercase and kebab-case slugs.

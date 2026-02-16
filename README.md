@@ -60,6 +60,16 @@ Deploy with [Vercel](https://vercel.com/):
 3. Add environment variables
 4. Deploy
 
+## Deployment Guardian
+
+This repo includes a deployment failure guardian for Vercel production deployments:
+
+- `pnpm deploy:scan` - scan failed production deployments and output structured JSON root-cause data.
+- `pnpm deploy:guardian` - run the full incident workflow (issue creation/dedupe, one-attempt remediation, PR/escalation, and incident closure checks).
+- `pnpm test:deploy-agent` - run deploy-agent unit tests.
+
+Operational details are documented in `docs/deploy-guardian.md`.
+
 ## License
 
 MIT
