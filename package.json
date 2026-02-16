@@ -15,7 +15,10 @@
     "test:resume-hooks": "bash scripts/test-resume-hooks.sh",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "deploy:scan": "tsx scripts/deploy-agent/scan-failures.ts",
+    "deploy:guardian": "tsx scripts/deploy-agent/guardian.ts",
+    "test:deploy-agent": "tsx --test scripts/deploy-agent/*.test.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.7",
