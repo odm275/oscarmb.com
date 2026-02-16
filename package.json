@@ -11,6 +11,8 @@
     "format": "prettier --write .",
     "embeddings": "tsx scripts/generate-embeddings.ts",
     "resume:tex": "tsx scripts/generate-resume-tex.ts",
+    "resume:pdf": "sh scripts/generate-resume-pdf.sh",
+    "test:resume-hooks": "bash scripts/test-resume-hooks.sh",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed"
