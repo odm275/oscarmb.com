@@ -51,6 +51,14 @@ See .env.example
 - Replace your resume with `public/resume.pdf`
 - Modify chatbot prompt in `src/app/api/chat/route.ts`
 
+## Resume PDF Workflow
+
+- Install LaTeX (smallest option): `brew install --cask basictex`
+- Ensure custom class file exists: `public/resume.cls`
+- Build PDF from `public/resume.tex`: `pnpm resume:pdf`
+
+Operational details and troubleshooting are documented in `docs/resume-pdf-generation.md`.
+
 ## Deployment
 
 Deploy with [Vercel](https://vercel.com/):
