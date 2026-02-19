@@ -54,8 +54,8 @@ See .env.example
 ## Resume PDF Workflow
 
 - Install LaTeX (smallest option): `brew install --cask basictex`
-- Ensure custom class file exists: `public/resume.cls`
-- Build PDF from `public/resume.tex`: `pnpm resume:pdf`
+- Ensure custom class file exists: `resume/resume.cls`
+- Build PDF: `pnpm resume:pdf`
 
 Operational details and troubleshooting are documented in `docs/resume-pdf-generation.md`.
 

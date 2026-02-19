@@ -212,7 +212,7 @@ function cleanLatex(text: string): string {
  * Extract resume content from LaTeX file
  */
 function extractResumeContent(): ContentChunk[] {
-  const filePath = path.join(process.cwd(), "public/resume.tex");
+  const filePath = path.join(process.cwd(), "resume/resume.tex");
 
   if (!fs.existsSync(filePath)) {
     console.log("Resume file not found, skipping resume extraction");

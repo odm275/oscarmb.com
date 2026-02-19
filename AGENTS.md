@@ -21,22 +21,24 @@ TypeScript is required; favor server components unless interactivity demands `"u
 ## Content Automation & Configuration Tips
 Guard secrets by using `dotenv` and never committing `.env*`. When editing MDX, keep assets in `public/blog/<slug>/` and update `src/data` entries if metadata changes. Verify Resend email templates inside `src/components/email` before deploying.
 
-## Pre-commit: Embeddings, resume.tex, and resume.pdf
-A Husky pre-commit hook ensures embeddings and resume artifacts stay in sync when you change content that feeds the RAG chatbot. If any embedding-source file is **staged** for commit, the hook runs `pnpm resume:tex` (when needed), `pnpm resume:pdf` (when `public/resume.tex` changed or was regenerated), and `pnpm embeddings`, then stages updated generated files (`src/data/embeddings.json`, `public/resume.tex`, and `public/resume.pdf`) in the same commit.
+## Pre-commit: Embeddings and resume.pdf
+A Husky pre-commit hook ensures embeddings and resume artifacts stay in sync when you change content that feeds the RAG chatbot. If any embedding-source file is **staged** for commit, the hook runs `pnpm embeddings` and stages the updated `src/data/embeddings.json`. If resume sources changed, the hook also regenerates `resume/resume.tex` (gitignored), compiles `public/resume.pdf`, and stages the PDF—all in the same commit.
 
-**Embedding-source files** (editing and staging any of these triggers the hook): `src/data/home.json`, `src/data/privacy.md`, `src/data/projects.json`, `src/data/career.json`, `src/data/socials.json`, `src/data/routes.json`, `public/resume.tex`. If `src/data/career.json` or `public/resume-template.tex` is staged, the hook regenerates `public/resume.tex`, then rebuilds `public/resume.pdf`, then updates embeddings.
+**Embedding-source files** (editing and staging any of these triggers the hook): `src/data/home.json`, `src/data/privacy.md`, `src/data/projects.json`, `src/data/career.json`, `src/data/socials.json`, `src/data/routes.json`. If `src/data/career.json` or `resume/resume-template.tex` is staged, the hook regenerates `resume/resume.tex` → `public/resume.pdf` → embeddings.
+
+`resume/resume.tex` is a generated intermediate file (gitignored). It is rebuilt on demand by `pnpm resume:tex` and consumed by `pnpm resume:pdf` and the embeddings script, but never committed.
 
 Requires `GOOGLE_GENERATIVE_AI_API_KEY` in `.env.local` for `pnpm embeddings` to succeed. To skip the hook (e.g. when the key is unavailable), use `git commit --no-verify`.
 
 ## Resume PDF Generation
-Experience content is sourced from `src/data/career.json`. The file `public/resume.tex` is generated from it (EXPERIENCE section only; preamble, SKILLS, and header stay in `public/resume-template.tex`). When updating the resume:
+Experience content is sourced from `src/data/career.json`. The file `resume/resume.tex` is generated from it (EXPERIENCE section only; preamble, SKILLS, and header stay in `resume/resume-template.tex`). When updating the resume:
 
 1. **Edit** `src/data/career.json` (job titles, dates, bullets, optional `location` per job).
-2. **Regenerate LaTeX**: Run `pnpm resume:tex` to write `public/resume.tex` from the template and career data.
+2. **Regenerate LaTeX**: Run `pnpm resume:tex` to write `resume/resume.tex` from the template and career data.
 3. **Prerequisites**: Install a LaTeX distribution (macOS: `brew install --cask mactex-no-gui` or install BasicTeX).
-4. **Compile**: Run `pnpm resume:pdf` (or `pdflatex -output-directory=public public/resume.tex`) to generate `public/resume.pdf`.
+4. **Compile**: Run `pnpm resume:pdf` to generate `public/resume.pdf`.
 5. **Update embeddings**: Run `pnpm embeddings` to regenerate chat AI context with the latest resume content (or rely on the pre-commit hook when you commit).
-6. **Commit**: Commit `career.json`, `resume.tex`, and `resume.pdf` together to keep them in sync (the pre-commit hook auto-updates/stages generated files).
+6. **Commit**: Commit `career.json` and `resume.pdf` together to keep them in sync (the pre-commit hook auto-regenerates and stages `resume.pdf` and `embeddings.json`).
 
 ## Skills
 Skill-specific guidance is defined in `.cursor/skills/**/SKILL.md`.

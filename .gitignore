@@ -43,3 +43,6 @@ output/
 .velite
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Generated resume intermediate
+resume/resume.tex

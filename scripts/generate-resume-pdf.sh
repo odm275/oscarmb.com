@@ -3,8 +3,9 @@
 set -e
 
 REPO_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+RESUME_DIR="$REPO_ROOT/resume"
 PUBLIC_DIR="$REPO_ROOT/public"
-RESUME_TEX="$PUBLIC_DIR/resume.tex"
+RESUME_TEX="$RESUME_DIR/resume.tex"
 RESUME_PDF="$PUBLIC_DIR/resume.pdf"
 TEX_BIN_DIR="/Library/TeX/texbin"
 
@@ -26,11 +27,11 @@ if [ ! -f "$RESUME_TEX" ]; then
   exit 1
 fi
 
-# Ensure the local custom document class is discoverable (resume.cls in public/).
+# Ensure the local custom document class is discoverable (resume.cls in resume/).
 if [ -n "${TEXINPUTS-}" ]; then
-  TEXINPUTS="$PUBLIC_DIR:$TEXINPUTS"
+  TEXINPUTS="$RESUME_DIR:$TEXINPUTS"
 else
-  TEXINPUTS="$PUBLIC_DIR:"
+  TEXINPUTS="$RESUME_DIR:"
 fi
 export TEXINPUTS
 
@@ -47,7 +48,7 @@ pdflatex \
   "$RESUME_TEX"
 
 if [ ! -f "$TMP_DIR/resume.pdf" ]; then
-  echo "❌ Failed to generate resume.pdf from public/resume.tex."
+  echo "❌ Failed to generate resume.pdf from resume/resume.tex."
   exit 1
 fi
 

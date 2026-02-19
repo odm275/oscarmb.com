@@ -54,7 +54,7 @@ setup_hook_repo() {
   local repo
   repo="$(mktemp -d)"
 
-  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/.test-bin"
+  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/resume" "$repo/.test-bin"
   cp "$PRE_COMMIT_SCRIPT" "$repo/scripts/pre-commit-embeddings.sh"
   chmod +x "$repo/scripts/pre-commit-embeddings.sh"
 
@@ -65,8 +65,7 @@ setup_hook_repo() {
   printf "{}\n" > "$repo/src/data/socials.json"
   printf "{}\n" > "$repo/src/data/routes.json"
   printf "{}\n" > "$repo/src/data/embeddings.json"
-  printf "resume tex\n" > "$repo/public/resume.tex"
-  printf "resume template\n" > "$repo/public/resume-template.tex"
+  printf "resume template\n" > "$repo/resume/resume-template.tex"
   printf "resume pdf\n" > "$repo/public/resume.pdf"
   printf "notes\n" > "$repo/notes.txt"
 
@@ -79,7 +78,8 @@ echo "$*" >> "$LOG_FILE"
 
 case "$*" in
   "resume:tex")
-    printf "generated tex\n" > public/resume.tex
+    mkdir -p resume
+    printf "generated tex\n" > resume/resume.tex
     ;;
   "resume:pdf")
     printf "generated pdf\n" > public/resume.pdf
@@ -137,32 +137,6 @@ test_hook_unrelated_file() {
   assert_equals "$command_log" "" "Hook should not run pnpm commands for unrelated staged files"
 }
 
-test_hook_resume_tex() {
-  local repo log_file status command_log staged
-  repo="$(setup_hook_repo)"
-  log_file="$repo/pnpm.log"
-  : > "$log_file"
-
-  printf "changed tex\n" >> "$repo/public/resume.tex"
-  git -C "$repo" add public/resume.tex
-
-  run_hook_in_repo "$repo" "$log_file"
-  status=$?
-  command_log="$(cat "$log_file")"
-  staged="$(git -C "$repo" diff --cached --name-only)"
-
-  rm -rf "$repo"
-
-  if [[ $status -ne 0 ]]; then
-    echo "   Hook exited with status $status"
-    return 1
-  fi
-
-  assert_equals "$command_log" $'resume:pdf\nembeddings' "Expected resume:pdf then embeddings when resume.tex is staged" || return 1
-  assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
-  assert_contains "$staged" "src/data/embeddings.json" "Expected embeddings.json staged"
-}
-
 test_hook_career_json() {
   local repo log_file status command_log staged
   repo="$(setup_hook_repo)"
@@ -185,7 +159,6 @@ test_hook_career_json() {
   fi
 
   assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged career.json" || return 1
-  assert_contains "$staged" "public/resume.tex" "Expected resume.tex staged" || return 1
   assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
   assert_contains "$staged" "src/data/embeddings.json" "Expected embeddings.json staged"
 }
@@ -196,8 +169,8 @@ test_hook_resume_template() {
   log_file="$repo/pnpm.log"
   : > "$log_file"
 
-  printf "changed template\n" >> "$repo/public/resume-template.tex"
-  git -C "$repo" add public/resume-template.tex
+  printf "changed template\n" >> "$repo/resume/resume-template.tex"
+  git -C "$repo" add resume/resume-template.tex
 
   run_hook_in_repo "$repo" "$log_file"
   status=$?
@@ -212,7 +185,6 @@ test_hook_resume_template() {
   fi
 
   assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged resume-template.tex" || return 1
-  assert_contains "$staged" "public/resume.tex" "Expected resume.tex staged" || return 1
   assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
   assert_contains "$staged" "src/data/embeddings.json" "Expected embeddings.json staged"
 }
@@ -220,10 +192,10 @@ test_hook_resume_template() {
 setup_pdf_workspace() {
   local workspace
   workspace="$(mktemp -d)"
-  mkdir -p "$workspace/scripts" "$workspace/public"
+  mkdir -p "$workspace/scripts" "$workspace/resume" "$workspace/public"
   cp "$PDF_SCRIPT" "$workspace/scripts/generate-resume-pdf.sh"
   chmod +x "$workspace/scripts/generate-resume-pdf.sh"
-  printf "\\documentclass{article}\n\\begin{document}\nResume\n\\end{document}\n" > "$workspace/public/resume.tex"
+  printf "\\documentclass{article}\n\\begin{document}\nResume\n\\end{document}\n" > "$workspace/resume/resume.tex"
   printf "%s" "$workspace"
 }
 
@@ -383,7 +355,6 @@ run_test() {
 
 main() {
   run_test "Hook skips pipeline for unrelated staged files" test_hook_unrelated_file
-  run_test "Hook runs resume:pdf + embeddings for staged resume.tex" test_hook_resume_tex
   run_test "Hook runs resume:tex -> resume:pdf -> embeddings for staged career.json" test_hook_career_json
   run_test "Hook runs full pipeline for staged resume-template.tex" test_hook_resume_template
   run_test "PDF script fails when pdflatex is missing" test_pdf_script_missing_pdflatex
