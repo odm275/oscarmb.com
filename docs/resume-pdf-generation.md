@@ -1,7 +1,35 @@
 # Resume PDF Generation
 
-This project generates `/Users/oscarmejia/dev/oscarmb.com/public/resume.pdf` from
-`/Users/oscarmejia/dev/oscarmb.com/public/resume.tex`.
+This project generates `public/resume.pdf` from `public/resume.tex`.
+
+## Workflow: Updating Career Data
+
+When you edit `src/data/career.json`, follow this pipeline to keep all generated artifacts in sync:
+
+```mermaid
+flowchart TD
+    A["Edit src/data/career.json"] --> B["pnpm resume:tex"]
+    B --> C["pnpm resume:pdf"]
+    C --> D["pnpm embeddings"]
+    D --> E["git add & commit"]
+
+    B -- "merges" --> B1["resume-template.tex\n+ career.json\n→ public/resume.tex"]
+    C -- "compiles" --> C1["public/resume.tex\n→ public/resume.pdf"]
+    D -- "regenerates" --> D1["src/data/embeddings.json\n(RAG chatbot context)"]
+
+    style A fill:#f9f,stroke:#333
+    style E fill:#9f9,stroke:#333
+```
+
+| Step | Command | What it does |
+|------|---------|--------------|
+| 1 | — | Edit `src/data/career.json` with new job titles, dates, or bullets |
+| 2 | `pnpm resume:tex` | Merges `public/resume-template.tex` (header, skills) with the EXPERIENCE section generated from `career.json` → writes `public/resume.tex` |
+| 3 | `pnpm resume:pdf` | Compiles `public/resume.tex` into `public/resume.pdf` via pdflatex |
+| 4 | `pnpm embeddings` | Regenerates `src/data/embeddings.json` so the RAG chatbot has up-to-date resume context (requires `GOOGLE_GENERATIVE_AI_API_KEY`) |
+| 5 | — | Commit `career.json`, `resume.tex`, `resume.pdf`, and `embeddings.json` together |
+
+> **Tip:** The pre-commit hook runs steps 2–4 automatically when you stage any embedding-source file. You can skip it with `git commit --no-verify` if the API key is unavailable.
 
 ## Prerequisites
 
