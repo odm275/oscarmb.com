@@ -38,4 +38,4 @@ This policy is current as of **Dec 2025**. If I make any changes, I'll update it
 
 ## Got Questions?
 
-If you any questions, concerns, or just want to say hi, drop me an email at [me@oscarmejiabautista.com](mailto:me@oscarmejiabautista.com) or use the [contact form](/contact). I'd love to hear from you!
+If you any questions, concerns, or just want to say hi, drop me an email at [oscarmejiaweb@gmail.com](mailto:oscarmejiaweb@gmail.com) or use the [contact form](/contact). I'd love to hear from you!
