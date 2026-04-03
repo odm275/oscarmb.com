@@ -1,6 +1,6 @@
 # Oscar's Portfolio
 
-A clean, minimal portfolio website built with Next.js 14, Tailwind CSS, and Shadcn UI. Features an AI chatbot with RAG, MDX blog with Mermaid diagrams, and email contact form.
+A clean, minimal portfolio website built with Next.js 14, Tailwind CSS, and Shadcn UI. Features an AI chatbot with RAG, MDX blog with Mermaid diagrams, and email contact form. Credit to Ang Wei Feng (Ted) for the template.
 
 ## Live Demo
 
