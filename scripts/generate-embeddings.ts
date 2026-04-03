@@ -212,7 +212,7 @@ function cleanLatex(text: string): string {
  * Extract resume content from LaTeX file
  */
 function extractResumeContent(): ContentChunk[] {
-  const filePath = path.join(process.cwd(), "resume/resume.tex");
+  const filePath = path.join(process.cwd(), "generated/resume.tex");
 
   if (!fs.existsSync(filePath)) {
     console.log("Resume file not found, skipping resume extraction");
@@ -358,7 +358,7 @@ async function generateEmbeddings(): Promise<void> {
   }
 
   // Write embeddings to file
-  const outputPath = path.join(process.cwd(), "src/data/embeddings.json");
+  const outputPath = path.join(process.cwd(), "generated/embeddings.json");
   const output = {
     _warning:
       "AUTO-GENERATED FILE — DO NOT EDIT. Regenerate with: pnpm embeddings (see scripts/generate-embeddings.ts).",

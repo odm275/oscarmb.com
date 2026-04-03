@@ -1,4 +1,4 @@
-import embeddingsData from "@/data/embeddings.json";
+import embeddingsData from "@generated/embeddings.json";
 
 interface EmbeddingChunk {
   slug: string;

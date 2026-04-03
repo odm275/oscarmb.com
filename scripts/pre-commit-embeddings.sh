@@ -57,7 +57,7 @@ fi
 
 if [ "$need_embeddings" -eq 1 ]; then
   pnpm embeddings
-  git add src/data/embeddings.json
+  git add generated/embeddings.json
 fi
 
 exit 0

@@ -61,7 +61,7 @@ function buildExperienceSection(career: { career: Array<{
 function main(): void {
   const careerPath = path.join(process.cwd(), "src/data/career.json");
   const templatePath = path.join(process.cwd(), "resume/resume-template.tex");
-  const outputPath = path.join(process.cwd(), "resume/resume.tex");
+  const outputPath = path.join(process.cwd(), "generated/resume.tex");
 
   if (!fs.existsSync(careerPath)) {
     console.error("❌ Missing src/data/career.json");
@@ -91,7 +91,7 @@ function main(): void {
 
   const output = banner + template.replace(PLACEHOLDER, experienceBlock);
   fs.writeFileSync(outputPath, output, "utf-8");
-  console.log("✅ Wrote resume/resume.tex from career.json");
+  console.log("✅ Wrote generated/resume.tex from career.json");
 }
 
 main();

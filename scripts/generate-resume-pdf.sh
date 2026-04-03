@@ -4,8 +4,9 @@ set -e
 
 REPO_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 RESUME_DIR="$REPO_ROOT/resume"
+GENERATED_DIR="$REPO_ROOT/generated"
 PUBLIC_DIR="$REPO_ROOT/public"
-RESUME_TEX="$RESUME_DIR/resume.tex"
+RESUME_TEX="$GENERATED_DIR/resume.tex"
 RESUME_PDF="$PUBLIC_DIR/resume.pdf"
 TEX_BIN_DIR="/Library/TeX/texbin"
 
@@ -23,7 +24,7 @@ if ! command -v pdflatex >/dev/null 2>&1; then
 fi
 
 if [ ! -f "$RESUME_TEX" ]; then
-  echo "❌ Missing $RESUME_TEX."
+  echo "❌ Missing $RESUME_TEX. Run 'pnpm resume:tex' first."
   exit 1
 fi
 
@@ -48,7 +49,7 @@ pdflatex \
   "$RESUME_TEX"
 
 if [ ! -f "$TMP_DIR/resume.pdf" ]; then
-  echo "❌ Failed to generate resume.pdf from resume/resume.tex."
+  echo "❌ Failed to generate resume.pdf from generated/resume.tex."
   exit 1
 fi
 

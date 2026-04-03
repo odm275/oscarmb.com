@@ -54,7 +54,7 @@ setup_hook_repo() {
   local repo
   repo="$(mktemp -d)"
 
-  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/resume" "$repo/.test-bin"
+  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/resume" "$repo/generated" "$repo/.test-bin"
   cp "$PRE_COMMIT_SCRIPT" "$repo/scripts/pre-commit-embeddings.sh"
   chmod +x "$repo/scripts/pre-commit-embeddings.sh"
 
@@ -64,7 +64,7 @@ setup_hook_repo() {
   printf "{}\n" > "$repo/src/data/career.json"
   printf "{}\n" > "$repo/src/data/socials.json"
   printf "{}\n" > "$repo/src/data/routes.json"
-  printf "{}\n" > "$repo/src/data/embeddings.json"
+  printf "{}\n" > "$repo/generated/embeddings.json"
   printf "resume template\n" > "$repo/resume/resume-template.tex"
   printf "resume pdf\n" > "$repo/public/resume.pdf"
   printf "notes\n" > "$repo/notes.txt"
@@ -78,14 +78,14 @@ echo "$*" >> "$LOG_FILE"
 
 case "$*" in
   "resume:tex")
-    mkdir -p resume
-    printf "generated tex\n" > resume/resume.tex
+    mkdir -p generated
+    printf "generated tex\n" > generated/resume.tex
     ;;
   "resume:pdf")
     printf "generated pdf\n" > public/resume.pdf
     ;;
   "embeddings")
-    printf "{\"ok\":true}\n" > src/data/embeddings.json
+    printf "{\"ok\":true}\n" > generated/embeddings.json
     ;;
   *)
     echo "Unexpected pnpm command: $*" >&2
@@ -160,7 +160,7 @@ test_hook_career_json() {
 
   assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged career.json" || return 1
   assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
-  assert_contains "$staged" "src/data/embeddings.json" "Expected embeddings.json staged"
+  assert_contains "$staged" "generated/embeddings.json" "Expected embeddings.json staged"
 }
 
 test_hook_resume_template() {
@@ -186,16 +186,16 @@ test_hook_resume_template() {
 
   assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged resume-template.tex" || return 1
   assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
-  assert_contains "$staged" "src/data/embeddings.json" "Expected embeddings.json staged"
+  assert_contains "$staged" "generated/embeddings.json" "Expected embeddings.json staged"
 }
 
 setup_pdf_workspace() {
   local workspace
   workspace="$(mktemp -d)"
-  mkdir -p "$workspace/scripts" "$workspace/resume" "$workspace/public"
+  mkdir -p "$workspace/scripts" "$workspace/resume" "$workspace/public" "$workspace/generated"
   cp "$PDF_SCRIPT" "$workspace/scripts/generate-resume-pdf.sh"
   chmod +x "$workspace/scripts/generate-resume-pdf.sh"
-  printf "\\documentclass{article}\n\\begin{document}\nResume\n\\end{document}\n" > "$workspace/resume/resume.tex"
+  printf "\\documentclass{article}\n\\begin{document}\nResume\n\\end{document}\n" > "$workspace/generated/resume.tex"
   printf "%s" "$workspace"
 }
 

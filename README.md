@@ -48,7 +48,7 @@ See .env.example
 - Update personal info in `src/data/*.json`
 - Replace projects in `src/data/projects.json`
 - Add blog posts in `src/content/posts/` (MDX format)
-- Replace your resume with `public/resume.pdf`
+- Replace your resume with `public/resume.pdf` (or regenerate via `pnpm resume`)
 - Modify chatbot prompt in `src/app/api/chat/route.ts`
 
 ## Resume PDF Workflow

@@ -25,6 +25,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@generated/*": [
+        "./generated/*"
+      ],
       "#velite": [
         "./.velite"
       ]
