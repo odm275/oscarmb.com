@@ -15,6 +15,8 @@
     "resume:tex": "tsx scripts/generate-resume-tex.ts",
     "//resume:pdf": "Compiles resume/resume.tex into public/resume.pdf via pdflatex",
     "resume:pdf": "sh scripts/generate-resume-pdf.sh",
+    "//resume": "Full resume pipeline: generate .tex, compile PDF, and regenerate embeddings",
+    "resume": "pnpm resume:tex && pnpm resume:pdf && pnpm embeddings",
     "test:resume-hooks": "bash scripts/test-resume-hooks.sh",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
