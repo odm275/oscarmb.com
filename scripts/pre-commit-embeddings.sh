@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Pre-commit hook: when embedding-source files are staged, regenerate embeddings
-# (and resume.tex/resume.pdf when resume sources changed) and stage generated files.
+# (and resume.pdf when career data changed) and stage generated files.
 
 set -e
 
@@ -16,14 +16,13 @@ src/data/socials.json
 src/data/routes.json
 "
 
-# Files that require regenerating resume.tex → resume.pdf before embeddings
+# Files that require regenerating resume.pdf before embeddings
 RESUME_SOURCES="
 src/data/career.json
-resume/resume-template.tex
 "
 
 need_embeddings=0
-need_resume_tex=0
+need_resume_pdf=0
 
 for f in $EMBEDDING_SOURCES; do
   [ -z "$f" ] && continue
@@ -36,21 +35,20 @@ done
 for f in $RESUME_SOURCES; do
   [ -z "$f" ] && continue
   if echo "$STAGED" | grep -q "^${f}$"; then
-    need_resume_tex=1
+    need_resume_pdf=1
     break
   fi
 done
 
-if [ "$need_resume_tex" -eq 1 ]; then
+if [ "$need_resume_pdf" -eq 1 ]; then
   need_embeddings=1
 fi
 
-if [ "$need_resume_tex" -eq 0 ] && [ "$need_embeddings" -eq 0 ]; then
+if [ "$need_resume_pdf" -eq 0 ] && [ "$need_embeddings" -eq 0 ]; then
   exit 0
 fi
 
-if [ "$need_resume_tex" -eq 1 ]; then
-  pnpm resume:tex
+if [ "$need_resume_pdf" -eq 1 ]; then
   pnpm resume:pdf
   git add public/resume.pdf
 fi

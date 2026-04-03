@@ -188,125 +188,32 @@ function extractNavigationData(): ContentChunk[] {
 }
 
 /**
- * Clean LaTeX content by removing commands and formatting
- */
-function cleanLatex(text: string): string {
-  return text
-    .replace(/\\textbf\{([^}]+)\}/g, "$1") // Remove \textbf{}
-    .replace(/\\textit\{([^}]+)\}/g, "$1") // Remove \textit{}
-    .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1") // Extract link text from \href{}{}
-    .replace(/\\item\s*/g, "• ") // Convert \item to bullet
-    .replace(/\\hfill/g, " - ") // Replace \hfill with dash
-    .replace(/\\itemsep\s*-?\d+pt\s*\{\}/g, "") // Remove itemsep
-    .replace(/\\\\/g, " ") // Remove line breaks
-    .replace(/\$\$[\s\S]*?\$\$/g, "") // Remove math mode blocks
-    .replace(/\\begin\{[^}]+\}/g, "") // Remove \begin{}
-    .replace(/\\end\{[^}]+\}/g, "") // Remove \end{}
-    .replace(/\\[a-zA-Z]+/g, "") // Remove remaining commands
-    .replace(/[{}]/g, "") // Remove braces
-    .replace(/\s+/g, " ") // Normalize whitespace
-    .trim();
-}
-
-/**
- * Extract resume content from LaTeX file
+ * Extract resume skills and overview content.
+ * Skills and contact info are static; experience is already covered by extractCareerData().
  */
 function extractResumeContent(): ContentChunk[] {
-  const filePath = path.join(process.cwd(), "generated/resume.tex");
+  const name = "Oscar Mejia";
 
-  if (!fs.existsSync(filePath)) {
-    console.log("Resume file not found, skipping resume extraction");
-    return [];
-  }
+  const skills = {
+    languages: "TypeScript, JavaScript (Node.js), HTML5, CSS",
+    frontend: "React, Next.js, React Query, Stencil.js, Redux, Tailwind, A11y",
+    backend: "Express, tRPC, GraphQL, REST APIs, PostgreSQL, Ruby on Rails",
+    tools:
+      "Docker, Google Cloud, Splunk, Git, Jest, MSW, Playwright, Biome, Git, Github, Docker, Charles Proxy, Claude Code, Cursor, Storybook",
+  };
 
-  const latex = fs.readFileSync(filePath, "utf-8");
-  const chunks: ContentChunk[] = [];
-
-  // Extract name
-  const nameMatch = latex.match(/\\name\{([^}]+)\}/);
-  const name = nameMatch ? nameMatch[1] : "Oscar Mejia";
-
-  // Extract contact info
-  const addressMatches = latex.match(/\\address\{([^}]+)\}/g);
-  const contactInfo = addressMatches
-    ? addressMatches.map((a) => a.replace(/\\address\{|\}/g, "")).join(" | ")
-    : "";
-
-  // Extract skills section
-  const skillsMatch = latex.match(
-    /\\begin\{rSection\}\{SKILLS\}([\s\S]*?)\\end\{rSection\}/,
-  );
-  if (skillsMatch) {
-    const skillsContent = cleanLatex(skillsMatch[1]);
-    // Parse the tabular content for skills
-    const skillLines = skillsContent
-      .split("•")
-      .filter((s) => s.trim())
-      .join(". ");
-
-    // Extract specific skill categories from the raw LaTeX
-    const languagesMatch = skillsMatch[1].match(/Languages\}\s*&\s*([^\\]+)/);
-    const frontendMatch = skillsMatch[1].match(/Frontend\}\s*&\s*([^\\]+)/);
-    const backendMatch = skillsMatch[1].match(/Backend\}\s*&\s*([^\\]+)/);
-    const toolsMatch = skillsMatch[1].match(/Tools\}\s*&\s*([^\\]+)/);
-
-    const languages = languagesMatch ? cleanLatex(languagesMatch[1]) : "";
-    const frontend = frontendMatch ? cleanLatex(frontendMatch[1]) : "";
-    const backend = backendMatch ? cleanLatex(backendMatch[1]) : "";
-    const tools = toolsMatch ? cleanLatex(toolsMatch[1]) : "";
-
-    chunks.push({
+  return [
+    {
       slug: "resume:skills",
       title: "Resume - Technical Skills",
-      content: `${name}'s technical skills from resume. Programming Languages: ${languages}. Frontend technologies: ${frontend}. Backend technologies: ${backend}. Tools and platforms: ${tools}. These are the skills listed on my official resume.`,
-    });
-  }
-
-  // Extract experience section
-  const expMatch = latex.match(
-    /\\begin\{rSection\}\{EXPERIENCE\}([\s\S]*?)\\end\{rSection\}/,
-  );
-  if (expMatch) {
-    const expContent = expMatch[1];
-
-    // Parse individual job entries using \textbf{Title} pattern
-    const jobPattern =
-      /\\textbf\{([^}]+)\}\s*\\hfill\s*([^\\]+)\\\\[\s\n]*([^\\]+)\s*\\hfill\s*\\textit\{([^}]+)\}[\s\n]*\\begin\{itemize\}([\s\S]*?)\\end\{itemize\}/g;
-
-    let match;
-    while ((match = jobPattern.exec(expContent)) !== null) {
-      const title = match[1].trim();
-      const dates = match[2].trim();
-      const company = match[3].trim();
-      const location = match[4].trim();
-      const itemsRaw = match[5];
-
-      // Extract bullet points
-      const items = itemsRaw
-        .split(/\\item/)
-        .filter((item) => item.trim())
-        .map((item) => cleanLatex(item))
-        .filter((item) => item.length > 0);
-
-      const bulletPoints = items.join(" ");
-      const slug = `resume:${toKebabCase(company.split("(")[0].trim())}`;
-
-      chunks.push({
-        slug,
-        title: `Resume - ${company} Experience`,
-        content: `${name} worked as ${title} at ${company} in ${location} from ${dates}. Resume bullet points: ${bulletPoints}. This is detailed work experience from my official resume.`,
-      });
-    }
-  }
-
-  // Add a general resume overview chunk
-  chunks.push({
-    slug: "resume:overview",
-    title: "Resume - Overview",
-    content: `${name}'s resume overview. Contact: ${cleanLatex(contactInfo)}. I am a Senior Software Engineer based in Houston, TX. US Citizen. My resume is available for download: [resume](/resume.pdf). The resume contains my technical skills, work experience at CVS Health, Freelance projects, and Poetic agency work.`,
-  });
-
-  return chunks;
+      content: `${name}'s technical skills from resume. Programming Languages: ${skills.languages}. Frontend technologies: ${skills.frontend}. Backend technologies: ${skills.backend}. Tools and platforms: ${skills.tools}. These are the skills listed on my official resume.`,
+    },
+    {
+      slug: "resume:overview",
+      title: "Resume - Overview",
+      content: `${name}'s resume overview. Contact: (281) 713-0784 | Houston, TX | US Citizen | oscarmejiaweb@gmail.com | linkedin.com/in/oscarmejiabautista | oscarmb.com. I am a Senior Software Engineer based in Houston, TX. US Citizen. My resume is available for download: [resume](/resume.pdf). The resume contains my technical skills, work experience at CVS Health, Freelance projects, and Poetic agency work.`,
+    },
+  ];
 }
 
 /**

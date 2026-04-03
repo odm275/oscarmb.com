@@ -44,5 +44,3 @@ output/
 # Sentry Config File
 .env.sentry-build-plugin
 
-# Generated intermediate (resume LaTeX)
-generated/resume.tex

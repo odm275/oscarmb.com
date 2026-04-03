@@ -53,11 +53,10 @@ See .env.example
 
 ## Resume PDF Workflow
 
-- Install LaTeX (smallest option): `brew install --cask basictex`
-- Ensure custom class file exists: `resume/resume.cls`
+- Install Playwright browsers: `npx playwright install chromium`
+- Edit experience data in `src/data/career.json`
+- Edit layout/skills in `src/components/resume/ResumeDocument.tsx`
 - Build PDF: `pnpm resume:pdf`
-
-Operational details and troubleshooting are documented in `docs/resume-pdf-generation.md`.
 
 ## Deployment
 

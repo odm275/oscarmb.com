@@ -4,7 +4,6 @@ set -u -o pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PRE_COMMIT_SCRIPT="$ROOT_DIR/scripts/pre-commit-embeddings.sh"
-PDF_SCRIPT="$ROOT_DIR/scripts/generate-resume-pdf.sh"
 
 PASS_COUNT=0
 FAIL_COUNT=0
@@ -54,7 +53,7 @@ setup_hook_repo() {
   local repo
   repo="$(mktemp -d)"
 
-  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/resume" "$repo/generated" "$repo/.test-bin"
+  mkdir -p "$repo/scripts" "$repo/src/data" "$repo/public" "$repo/generated" "$repo/.test-bin"
   cp "$PRE_COMMIT_SCRIPT" "$repo/scripts/pre-commit-embeddings.sh"
   chmod +x "$repo/scripts/pre-commit-embeddings.sh"
 
@@ -65,7 +64,6 @@ setup_hook_repo() {
   printf "{}\n" > "$repo/src/data/socials.json"
   printf "{}\n" > "$repo/src/data/routes.json"
   printf "{}\n" > "$repo/generated/embeddings.json"
-  printf "resume template\n" > "$repo/resume/resume-template.tex"
   printf "resume pdf\n" > "$repo/public/resume.pdf"
   printf "notes\n" > "$repo/notes.txt"
 
@@ -77,10 +75,6 @@ LOG_FILE="${PNPM_LOG_FILE:?missing PNPM_LOG_FILE}"
 echo "$*" >> "$LOG_FILE"
 
 case "$*" in
-  "resume:tex")
-    mkdir -p generated
-    printf "generated tex\n" > generated/resume.tex
-    ;;
   "resume:pdf")
     printf "generated pdf\n" > public/resume.pdf
     ;;
@@ -158,24 +152,23 @@ test_hook_career_json() {
     return 1
   fi
 
-  assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged career.json" || return 1
+  assert_equals "$command_log" $'resume:pdf\nembeddings' "Expected resume:pdf then embeddings for staged career.json" || return 1
   assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
   assert_contains "$staged" "generated/embeddings.json" "Expected embeddings.json staged"
 }
 
-test_hook_resume_template() {
+test_hook_embedding_source_no_resume() {
   local repo log_file status command_log staged
   repo="$(setup_hook_repo)"
   log_file="$repo/pnpm.log"
   : > "$log_file"
 
-  printf "changed template\n" >> "$repo/resume/resume-template.tex"
-  git -C "$repo" add resume/resume-template.tex
+  printf "{\"changed\":true}\n" > "$repo/src/data/projects.json"
+  git -C "$repo" add src/data/projects.json
 
   run_hook_in_repo "$repo" "$log_file"
   status=$?
   command_log="$(cat "$log_file")"
-  staged="$(git -C "$repo" diff --cached --name-only)"
 
   rm -rf "$repo"
 
@@ -184,162 +177,7 @@ test_hook_resume_template() {
     return 1
   fi
 
-  assert_equals "$command_log" $'resume:tex\nresume:pdf\nembeddings' "Expected full pipeline for staged resume-template.tex" || return 1
-  assert_contains "$staged" "public/resume.pdf" "Expected resume.pdf staged" || return 1
-  assert_contains "$staged" "generated/embeddings.json" "Expected embeddings.json staged"
-}
-
-setup_pdf_workspace() {
-  local workspace
-  workspace="$(mktemp -d)"
-  mkdir -p "$workspace/scripts" "$workspace/resume" "$workspace/public" "$workspace/generated"
-  cp "$PDF_SCRIPT" "$workspace/scripts/generate-resume-pdf.sh"
-  chmod +x "$workspace/scripts/generate-resume-pdf.sh"
-  printf "\\documentclass{article}\n\\begin{document}\nResume\n\\end{document}\n" > "$workspace/generated/resume.tex"
-  printf "%s" "$workspace"
-}
-
-test_pdf_script_missing_pdflatex() {
-  local workspace no_pdflatex_dir output status
-  workspace="$(setup_pdf_workspace)"
-  no_pdflatex_dir="$workspace/no-pdflatex"
-  mkdir -p "$no_pdflatex_dir"
-
-  output="$(
-    cd "$workspace" || exit 1
-    PATH="$no_pdflatex_dir:/usr/bin:/bin" sh scripts/generate-resume-pdf.sh 2>&1
-  )"
-  status=$?
-
-  rm -rf "$workspace"
-
-  if [[ $status -eq 0 ]]; then
-    echo "   Expected non-zero exit code when pdflatex is missing"
-    return 1
-  fi
-
-  assert_contains "$output" "pdflatex is required" "Expected missing-pdflatex message"
-}
-
-write_fake_pdflatex_success() {
-  local target="$1"
-
-  cat > "$target" << 'EOF'
-#!/usr/bin/env sh
-set -eu
-
-OUTPUT_DIR=""
-for arg in "$@"; do
-  case "$arg" in
-    -output-directory=*)
-      OUTPUT_DIR="${arg#-output-directory=}"
-      ;;
-  esac
-done
-
-if [ -z "$OUTPUT_DIR" ]; then
-  echo "missing output directory" >&2
-  exit 1
-fi
-
-printf "fake pdf\n" > "$OUTPUT_DIR/resume.pdf"
-EOF
-  chmod +x "$target"
-}
-
-test_pdf_script_success() {
-  local workspace bin_dir status
-  workspace="$(setup_pdf_workspace)"
-  bin_dir="$workspace/test-bin"
-  mkdir -p "$bin_dir"
-  write_fake_pdflatex_success "$bin_dir/pdflatex"
-
-  (
-    cd "$workspace" || exit 1
-    PATH="$bin_dir:/usr/bin:/bin" sh scripts/generate-resume-pdf.sh
-  )
-  status=$?
-
-  if [[ $status -ne 0 ]]; then
-    rm -rf "$workspace"
-    echo "   Expected success from PDF script with fake pdflatex"
-    return 1
-  fi
-
-  if [[ ! -f "$workspace/public/resume.pdf" ]]; then
-    rm -rf "$workspace"
-    echo "   Expected public/resume.pdf to be created"
-    return 1
-  fi
-
-  rm -rf "$workspace"
-  return 0
-}
-
-write_fake_pdflatex_failure() {
-  local target="$1"
-
-  cat > "$target" << 'EOF'
-#!/usr/bin/env sh
-exit 1
-EOF
-  chmod +x "$target"
-}
-
-test_pdf_script_pdflatex_failure() {
-  local workspace bin_dir status
-  workspace="$(setup_pdf_workspace)"
-  bin_dir="$workspace/test-bin"
-  mkdir -p "$bin_dir"
-  write_fake_pdflatex_failure "$bin_dir/pdflatex"
-
-  (
-    cd "$workspace" || exit 1
-    PATH="$bin_dir:/usr/bin:/bin" sh scripts/generate-resume-pdf.sh >/dev/null 2>&1
-  )
-  status=$?
-
-  rm -rf "$workspace"
-
-  if [[ $status -eq 0 ]]; then
-    echo "   Expected non-zero exit code when pdflatex fails"
-    return 1
-  fi
-
-  return 0
-}
-
-write_fake_pdflatex_without_pdf() {
-  local target="$1"
-
-  cat > "$target" << 'EOF'
-#!/usr/bin/env sh
-exit 0
-EOF
-  chmod +x "$target"
-}
-
-test_pdf_script_missing_output_pdf() {
-  local workspace bin_dir output status
-  workspace="$(setup_pdf_workspace)"
-  bin_dir="$workspace/test-bin"
-  mkdir -p "$bin_dir"
-  write_fake_pdflatex_without_pdf "$bin_dir/pdflatex"
-
-  output="$(
-    cd "$workspace" || exit 1
-    PATH="$bin_dir:/usr/bin:/bin" sh scripts/generate-resume-pdf.sh 2>&1
-  )"
-  status=$?
-
-  rm -rf "$workspace"
-
-  if [[ $status -eq 0 ]]; then
-    echo "   Expected non-zero exit code when resume.pdf is not produced"
-    return 1
-  fi
-
-  assert_contains "$output" "Failed to generate resume.pdf" "Expected missing-output error message"
+  assert_equals "$command_log" $'embeddings' "Expected only embeddings for non-resume embedding source"
 }
 
 run_test() {
@@ -355,12 +193,8 @@ run_test() {
 
 main() {
   run_test "Hook skips pipeline for unrelated staged files" test_hook_unrelated_file
-  run_test "Hook runs resume:tex -> resume:pdf -> embeddings for staged career.json" test_hook_career_json
-  run_test "Hook runs full pipeline for staged resume-template.tex" test_hook_resume_template
-  run_test "PDF script fails when pdflatex is missing" test_pdf_script_missing_pdflatex
-  run_test "PDF script succeeds when pdflatex produces resume.pdf" test_pdf_script_success
-  run_test "PDF script fails when pdflatex returns non-zero" test_pdf_script_pdflatex_failure
-  run_test "PDF script fails when pdflatex does not produce resume.pdf" test_pdf_script_missing_output_pdf
+  run_test "Hook runs resume:pdf -> embeddings for staged career.json" test_hook_career_json
+  run_test "Hook runs only embeddings for non-resume embedding source" test_hook_embedding_source_no_resume
 
   echo ""
   echo "Passed: $PASS_COUNT"
