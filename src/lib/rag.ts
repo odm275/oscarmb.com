@@ -7,18 +7,19 @@ interface EmbeddingChunk {
   embedding: number[];
 }
 
-// Cache the embeddings in memory
 let cachedEmbeddings: EmbeddingChunk[] | null = null;
 
 /**
- * Load embeddings from JSON file (cached)
+ * Load embeddings from JSON file (cached).
+ * The JSON is wrapped in `{ _warning, embeddings }` by the generator.
  */
 export function loadEmbeddings(): EmbeddingChunk[] {
   if (cachedEmbeddings) {
     return cachedEmbeddings;
   }
 
-  cachedEmbeddings = embeddingsData as EmbeddingChunk[];
+  const data = embeddingsData as unknown as { embeddings: EmbeddingChunk[] };
+  cachedEmbeddings = data.embeddings;
   return cachedEmbeddings;
 }
 

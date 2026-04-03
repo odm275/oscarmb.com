@@ -359,11 +359,12 @@ async function generateEmbeddings(): Promise<void> {
 
   // Write embeddings to file
   const outputPath = path.join(process.cwd(), "src/data/embeddings.json");
-  fs.writeFileSync(
-    outputPath,
-    JSON.stringify(embeddingsWithVectors, null, 2),
-    "utf-8",
-  );
+  const output = {
+    _warning:
+      "AUTO-GENERATED FILE — DO NOT EDIT. Regenerate with: pnpm embeddings (see scripts/generate-embeddings.ts).",
+    embeddings: embeddingsWithVectors,
+  };
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), "utf-8");
 
   console.log(`\nEmbeddings saved to: ${outputPath}`);
   console.log(`Total chunks: ${embeddingsWithVectors.length}`);
