@@ -58,7 +58,9 @@ const CAREER_SLUG_RECENCY_ORDER = [
 ] as const;
 
 function careerRecencyRank(slug: string): number {
-  const idx = CAREER_SLUG_RECENCY_ORDER.indexOf(slug as (typeof CAREER_SLUG_RECENCY_ORDER)[number]);
+  const idx = CAREER_SLUG_RECENCY_ORDER.indexOf(
+    slug as (typeof CAREER_SLUG_RECENCY_ORDER)[number],
+  );
   return idx === -1 ? CAREER_SLUG_RECENCY_ORDER.length : idx;
 }
 
@@ -104,10 +106,6 @@ export function formatContext(
   }
 
   return results
-    .map(
-      (r, i) =>
-        `[${i + 1}] ${r.title}\n${r.content}`,
-    )
+    .map((r, i) => `[${i + 1}] ${r.title}\n${r.content}`)
     .join("\n\n---\n\n");
 }
-

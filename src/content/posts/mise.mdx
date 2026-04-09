@@ -40,7 +40,6 @@ I had two considerations: what type of database to use, and where to host it.
 1.  Choosing a Database:
 
 - SQL
-
   - Pros 👍🏼:
     - The app is heavily relational, making SQL a natural choice.
     - Combined with Prisma, I get compile-time type safety between my database and application code, increasing **reliability**. (SQL alone has data types but no compile-time guarantees—Prisma bridges that gap.)
@@ -54,7 +53,6 @@ I had two considerations: what type of database to use, and where to host it.
     - Less reliable data means more bugs, which burns time.
 
 2.  Choose a Cloud Provider (Heroku, Railway, Render, PlanetScale).
-
     - I considered [PlanetScale](https://planetscale.com/) for its version control features, but it felt like overkill for this project's scale.
 
     - [Railway](https://railway.app/) was the easiest to set up with reasonable costs. I spun up Postgres staging and production instances in less than 5 minutes.
@@ -111,7 +109,7 @@ REST, [GraphQL](https://graphql.org/), and [tRPC](https://trpc.io/) were all can
 
 tRPC had the best trade-offs for **_Mise_**. The cons were negligible for my case, and I got all the pros: a **safe** way to call my backend and top-tier intellisense. Both **nimble** and **reliable**.
 
-**Limitation acknowledged:** I initially claimed migration was as simple as "copy-pasting code." That understates the effort. Migrating to REST or GraphQL would require setting up a new API layer, handling serialization manually, recreating error handling, and updating all frontend calls. It's *easier* than migrating from GraphQL, but not trivial. Also worth noting: I listed "code generation" as a GraphQL con, but tRPC's automatic types rely on TypeScript's inference—functionally similar magic, just implicit rather than explicit.
+**Limitation acknowledged:** I initially claimed migration was as simple as "copy-pasting code." That understates the effort. Migrating to REST or GraphQL would require setting up a new API layer, handling serialization manually, recreating error handling, and updating all frontend calls. It's _easier_ than migrating from GraphQL, but not trivial. Also worth noting: I listed "code generation" as a GraphQL con, but tRPC's automatic types rely on TypeScript's inference—functionally similar magic, just implicit rather than explicit.
 
 #### Next.js vs Custom Backend
 
@@ -144,7 +142,7 @@ We define the input object with Zod
 ```ts
 export const itemsByRestaurantSchema = z.object({
   restaurantId: z.string(),
-})
+});
 ```
 
 Place our value in the input for the prop for my `itemsByRestaurant` query
@@ -207,17 +205,14 @@ I used [React Query](https://tanstack.com/query/v4/?from=reactQueryV3&original=h
 [React Query](https://tanstack.com/query/v4/?from=reactQueryV3&original=https://react-query-v3.tanstack.com/) is excellent for handling server state. When data changes, there are three strategies:
 
 1. Invalidate queries when server data updates
-
    - Pros: Less code.
    - Cons: Potential performance issues; doesn't show instantly in UI.
 
 2. Update cache with mutation response
-
    - Pros: More control.
    - Cons: More code; doesn't show instantly in UI.
 
 3. Optimistic updates
-
    - Pros: Displays instantly for a snappy experience.
    - Cons: Requires rollback handling if server request fails, which can cause flashy UI behavior.
 
@@ -285,12 +280,10 @@ From [Stately video](https://www.youtube.com/watch?v=FrNXCJa5FLs&t=194s&ab_chann
 Weighing the pros and cons:
 
 - useReducer
-
   - Pros: Lower learning curve
   - Cons: Doesn't scale well; less reliable; logic mostly in one place
 
 - XState
-
   - Pros: Scales well; more reliable; all logic truly in one place
   - Cons: Higher learning curve
 

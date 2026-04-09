@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,15 +18,9 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@generated/*": [
-        "./generated/*"
-      ],
-      "#velite": [
-        "./.velite"
-      ]
+      "@/*": ["./src/*"],
+      "@generated/*": ["./generated/*"],
+      "#velite": ["./.velite"]
     },
     "target": "ES2017"
   },
@@ -42,9 +32,7 @@
     ".velite/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"

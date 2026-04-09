@@ -19,7 +19,8 @@ const calistoga = Calistoga({
 
 export const metadata: Metadata = {
   title: "Oscar Mejia | Software Engineer",
-  description: "Senior Software Engineer crafting scalable TypeScript solutions. Full-stack by passion, architecture by trade.",
+  description:
+    "Senior Software Engineer crafting scalable TypeScript solutions. Full-stack by passion, architecture by trade.",
   icons: {
     icon: [
       { url: "/favicon.ico" },

@@ -5,7 +5,10 @@ import dynamicIconImports from "lucide-react/dynamicIconImports";
 const fallback = <div style={{ background: "#ddd", width: 24, height: 24 }} />;
 
 // Cache lazy components so they aren't recreated on every render
-const iconCache = new Map<string, React.LazyExoticComponent<React.ComponentType<LucideProps>>>();
+const iconCache = new Map<
+  string,
+  React.LazyExoticComponent<React.ComponentType<LucideProps>>
+>();
 
 function getLazyIcon(name: keyof typeof dynamicIconImports) {
   if (!iconCache.has(name)) {

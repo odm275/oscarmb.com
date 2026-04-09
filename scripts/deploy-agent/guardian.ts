@@ -42,7 +42,11 @@ const URL_REGEX = /(https:\/\/[a-zA-Z0-9-]+\.vercel\.app)/g;
 const PR_URL_REGEX = /https:\/\/github\.com\/[^\s]+\/pull\/\d+/;
 const ISSUE_URL_REGEX = /https:\/\/github\.com\/[^\s]+\/issues\/\d+/;
 
-function run(command: string, args: string[], options: RunOptions = {}): CommandExecution {
+function run(
+  command: string,
+  args: string[],
+  options: RunOptions = {},
+): CommandExecution {
   const result = spawnSync(command, args, {
     encoding: "utf-8",
     stdio: "pipe",
@@ -52,7 +56,9 @@ function run(command: string, args: string[], options: RunOptions = {}): Command
     exitCode: result.status ?? 1,
     stdout: result.stdout ?? "",
     stderr: result.stderr ?? "",
-    output: [result.stdout ?? "", result.stderr ?? ""].filter(Boolean).join("\n"),
+    output: [result.stdout ?? "", result.stderr ?? ""]
+      .filter(Boolean)
+      .join("\n"),
   };
 
   if (!options.allowFailure && execution.exitCode !== 0) {
@@ -69,11 +75,7 @@ function parseJsonOutput<T>(output: string): T {
 }
 
 function tailLines(text: string, count = 25): string {
-  return text
-    .split("\n")
-    .filter(Boolean)
-    .slice(-count)
-    .join("\n");
+  return text.split("\n").filter(Boolean).slice(-count).join("\n");
 }
 
 function sanitizeBranchFragment(value: string): string {
@@ -127,11 +129,9 @@ function createUniqueBranch(baseBranch: string): string {
   let counter = 1;
 
   while (true) {
-    const exists = run(
-      "git",
-      ["rev-parse", "--verify", "--quiet", candidate],
-      { allowFailure: true },
-    );
+    const exists = run("git", ["rev-parse", "--verify", "--quiet", candidate], {
+      allowFailure: true,
+    });
 
     if (exists.exitCode !== 0) {
       createBranch(candidate);
@@ -163,9 +163,7 @@ function listOpenIncidentIssue(deploymentId: string): IssueSummary | null {
   ]);
 
   const issues = parseJsonOutput<IssueSummary[]>(issueListResult.stdout);
-  const match = issues.find((issue) =>
-    issue.title.startsWith(INCIDENT_PREFIX),
-  );
+  const match = issues.find((issue) => issue.title.startsWith(INCIDENT_PREFIX));
 
   return match ?? null;
 }
@@ -254,7 +252,11 @@ function createRemediationPr(
   failure: DeploymentFailure,
 ): string {
   run("git", ["add", "-A"]);
-  run("git", ["commit", "-m", `fix(deploy): remediate ${failure.deploymentId}`]);
+  run("git", [
+    "commit",
+    "-m",
+    `fix(deploy): remediate ${failure.deploymentId}`,
+  ]);
   run("git", ["push", "-u", "origin", branch]);
 
   const prBody = [
@@ -353,7 +355,10 @@ function attemptVulnerableDependencyFix(
   );
 }
 
-function attemptCompileOrTypeFix(issue: IssueSummary, failure: DeploymentFailure): void {
+function attemptCompileOrTypeFix(
+  issue: IssueSummary,
+  failure: DeploymentFailure,
+): void {
   checkoutBranch(MAIN_BRANCH);
   const baseBranch = `codex/deploy-fix-${sanitizeBranchFragment(
     failure.deploymentId.slice(0, 14),
@@ -401,7 +406,10 @@ function attemptCompileOrTypeFix(issue: IssueSummary, failure: DeploymentFailure
   );
 }
 
-function escalateWithoutCodeChanges(issue: IssueSummary, failure: DeploymentFailure): void {
+function escalateWithoutCodeChanges(
+  issue: IssueSummary,
+  failure: DeploymentFailure,
+): void {
   commentOnIssue(
     issue.number,
     [
@@ -416,7 +424,9 @@ function escalateWithoutCodeChanges(issue: IssueSummary, failure: DeploymentFail
   );
 }
 
-function collectDeploymentsByStatus(status: "READY" | "ERROR"): DeploymentSnapshot[] {
+function collectDeploymentsByStatus(
+  status: "READY" | "ERROR",
+): DeploymentSnapshot[] {
   const listResult = run("vercel", [
     "list",
     VERCEL_PROJECT,
@@ -431,11 +441,9 @@ function collectDeploymentsByStatus(status: "READY" | "ERROR"): DeploymentSnapsh
   const snapshots: DeploymentSnapshot[] = [];
 
   for (const deploymentUrl of urls) {
-    const inspectResult = run(
-      "vercel",
-      ["inspect", deploymentUrl, "--json"],
-      { allowFailure: true },
-    );
+    const inspectResult = run("vercel", ["inspect", deploymentUrl, "--json"], {
+      allowFailure: true,
+    });
 
     const start = inspectResult.output.indexOf("{");
     const end = inspectResult.output.lastIndexOf("}");
@@ -475,8 +483,8 @@ function closeResolvedIncidents(): void {
     "number,url,title,createdAt,body",
   ]);
 
-  const issues = parseJsonOutput<IssueSummary[]>(issuesResult.stdout).filter((issue) =>
-    issue.title.startsWith(INCIDENT_PREFIX),
+  const issues = parseJsonOutput<IssueSummary[]>(issuesResult.stdout).filter(
+    (issue) => issue.title.startsWith(INCIDENT_PREFIX),
   );
 
   for (const issue of issues) {

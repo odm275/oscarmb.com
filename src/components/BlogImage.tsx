@@ -65,7 +65,7 @@ export default function BlogImage({
               <Button
                 variant="secondary"
                 size="sm"
-                className="pointer-events-auto rounded-full px-4 shadow-lg bg-white text-foreground hover:bg-white/90 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+                className="pointer-events-auto rounded-full bg-white px-4 text-foreground shadow-lg hover:bg-white/90 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
                 aria-label="Open preview"
               >
                 <Maximize2 className="h-4 w-4" />
@@ -75,7 +75,7 @@ export default function BlogImage({
             <Button
               variant="secondary"
               size="sm"
-              className="pointer-events-auto rounded-full px-4 shadow-lg bg-white text-foreground hover:bg-white/90 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              className="pointer-events-auto rounded-full bg-white px-4 text-foreground shadow-lg hover:bg-white/90 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
               onClick={handleOpenInNewTab}
               aria-label="Open in new tab"
             >

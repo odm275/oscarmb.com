@@ -100,7 +100,9 @@ function toIsoDate(value: number | string | undefined): string {
   return new Date(0).toISOString();
 }
 
-export function scanFailedDeployments(options: ScanOptions = {}): ScanFailuresReport {
+export function scanFailedDeployments(
+  options: ScanOptions = {},
+): ScanFailuresReport {
   const project = options.project ?? "oscarmb-com";
   const environment = options.environment ?? "production";
   const runCommand = options.runCommand ?? defaultRunCommand;
@@ -116,18 +118,28 @@ export function scanFailedDeployments(options: ScanOptions = {}): ScanFailuresRe
   ]);
 
   if (listResult.exitCode !== 0) {
-    throw new Error(`Failed to list deployments: ${combinedOutput(listResult)}`);
+    throw new Error(
+      `Failed to list deployments: ${combinedOutput(listResult)}`,
+    );
   }
 
   const deployments = extractDeploymentUrls(combinedOutput(listResult));
   const failures: DeploymentFailure[] = [];
 
   for (const deploymentUrl of deployments) {
-    const inspectResult = runCommand("vercel", ["inspect", deploymentUrl, "--json"]);
+    const inspectResult = runCommand("vercel", [
+      "inspect",
+      deploymentUrl,
+      "--json",
+    ]);
     const inspectOutput = combinedOutput(inspectResult);
     const inspectData = parseInspectJson(inspectOutput);
 
-    const logsResult = runCommand("vercel", ["inspect", deploymentUrl, "--logs"]);
+    const logsResult = runCommand("vercel", [
+      "inspect",
+      deploymentUrl,
+      "--logs",
+    ]);
     const logsOutput = combinedOutput(logsResult);
     const rootCause = parseRootCause(logsOutput);
 

@@ -90,7 +90,8 @@ export function parseRootCause(logOutput: string): RootCauseAnalysis {
     if (pattern.test(logOutput)) {
       return {
         rootCauseType: "compile_or_type_error",
-        summary: `Deployment failed due to compile/type build errors.${lastErrorLine ? ` ${lastErrorLine}` : ""}`.trim(),
+        summary:
+          `Deployment failed due to compile/type build errors.${lastErrorLine ? ` ${lastErrorLine}` : ""}`.trim(),
         lastErrorLine,
       };
     }
@@ -98,7 +99,8 @@ export function parseRootCause(logOutput: string): RootCauseAnalysis {
 
   return {
     rootCauseType: "unknown",
-    summary: `Deployment failed with an unknown root cause.${lastErrorLine ? ` ${lastErrorLine}` : ""}`.trim(),
+    summary:
+      `Deployment failed with an unknown root cause.${lastErrorLine ? ` ${lastErrorLine}` : ""}`.trim(),
     lastErrorLine,
   };
 }

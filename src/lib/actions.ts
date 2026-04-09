@@ -41,6 +41,9 @@ export async function sendEmail(data: ContactFormInputs) {
         recipient: result.data.email,
       },
     });
-    return { error: error instanceof Error ? error.message : "An unknown error occurred" };
+    return {
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    };
   }
 }

@@ -16,7 +16,11 @@ import {
 } from "./ui/table";
 import { cn } from "@/lib/utils";
 
-function Code({ children, className, ...props }: JSX.IntrinsicElements["code"]) {
+function Code({
+  children,
+  className,
+  ...props
+}: JSX.IntrinsicElements["code"]) {
   const classNameStr = className ?? "";
 
   // Handle Mermaid diagrams
