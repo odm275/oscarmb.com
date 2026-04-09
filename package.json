@@ -7,6 +7,8 @@
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
+    "typecheck": "tsc",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint .",
     "format": "prettier --write .",
     "//embeddings": "Regenerates generated/embeddings.json for the RAG chatbot from data sources (career, projects, socials, etc.). Requires GOOGLE_GENERATIVE_AI_API_KEY.",
@@ -75,6 +77,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "^16",
     "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
@@ -84,7 +87,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5",
-    "velite": "^0.3.1"
+    "velite": "^0.3.1",
+    "vitest": "^2.1.9"
   },
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
 }
