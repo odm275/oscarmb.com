@@ -1,4 +1,5 @@
 import BlogImage from "@/components/BlogImage";
+import { BlogPostContentArea } from "@/components/BlogPostContentArea";
 import LinkWithIcon from "@/components/LinkWithIcon";
 import { MDXRenderer } from "@/components/MDXRenderer";
 import { Badge } from "@/components/ui/Badge";
@@ -190,9 +191,9 @@ export default async function Post({
         </header>
 
         {/* Content */}
-        <main className="prose prose-lg max-w-none dark:prose-invert">
+        <BlogPostContentArea>
           <MDXRenderer code={post.body} />
-        </main>
+        </BlogPostContentArea>
 
         {/* Footer */}
         <footer className="mt-24">
