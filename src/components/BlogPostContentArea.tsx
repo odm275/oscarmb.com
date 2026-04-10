@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import { useTableOfContents } from "@/hooks/useTableOfContents";
 import { TableOfContents } from "./TableOfContents";
 
@@ -22,6 +24,8 @@ export function BlogPostContentArea({ children }: BlogPostContentAreaProps) {
   const [headings, contentRef] = useTableOfContents();
   const h2Count = headings.filter((h) => h.level === 2).length;
   const showToc = h2Count >= 2;
+  const ids = useMemo(() => headings.map((h) => h.id), [headings]);
+  const activeId = useActiveSection(ids);
 
   return (
     <>
@@ -37,7 +41,7 @@ export function BlogPostContentArea({ children }: BlogPostContentAreaProps) {
             overflowY: "auto",
           }}
         >
-          <TableOfContents headings={headings} />
+          <TableOfContents headings={headings} activeId={activeId} />
         </div>
       )}
       <main
