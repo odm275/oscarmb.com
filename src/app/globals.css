@@ -102,6 +102,9 @@
   .input-error {
     @apply ml-1 mt-2 text-sm text-rose-400;
   }
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
 }
 
 @layer components {
