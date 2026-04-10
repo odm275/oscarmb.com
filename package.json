@@ -23,9 +23,11 @@
     "test:e2e:headed": "playwright test --headed",
     "deploy:scan": "tsx scripts/deploy-agent/scan-failures.ts",
     "deploy:guardian": "tsx scripts/deploy-agent/guardian.ts",
-    "test:deploy-agent": "tsx --test scripts/deploy-agent/*.test.ts"
+    "test:deploy-agent": "tsx --test scripts/deploy-agent/*.test.ts",
+    "sandcastle": "npx tsx .sandcastle/main.mts"
   },
   "dependencies": {
+    "@ai-hero/sandcastle": "^0.3.0",
     "@ai-sdk/google": "^3.0.7",
     "@ai-sdk/openai": "^3.0.2",
     "@ai-sdk/react": "^3.0.6",
@@ -71,6 +73,8 @@
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
