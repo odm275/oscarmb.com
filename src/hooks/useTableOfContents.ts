@@ -28,11 +28,10 @@ export function useTableOfContents(): [
     const extracted: TocHeading[] = [];
 
     elements.forEach((node) => {
-      const id = node.id;
+      const section = node.closest("section[id]");
+      const id = section?.id;
       if (!id) return;
 
-      // Strip the autolink anchor added by rehype-autolink-headings;
-      // collect only text nodes to get the clean heading text.
       const text =
         Array.from(node.childNodes)
           .filter((child) => child.nodeType === Node.TEXT_NODE)

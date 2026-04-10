@@ -7,10 +7,12 @@ function makeContainer(
 ): HTMLElement {
   const container = document.createElement("div");
   headings.forEach(({ tag, id, text }) => {
+    const section = document.createElement("section");
+    section.id = id;
     const el = document.createElement(tag);
-    el.id = id;
     el.textContent = text;
-    container.appendChild(el);
+    section.appendChild(el);
+    container.appendChild(section);
   });
   return container;
 }
@@ -40,18 +42,20 @@ describe("useTableOfContents", () => {
     ]);
   });
 
-  it("skips headings that have no id attribute", () => {
+  it("skips headings whose parent section has no id", () => {
     const { result } = renderHook(() => useTableOfContents());
     const container = document.createElement("div");
 
+    const sectionWithId = document.createElement("section");
+    sectionWithId.id = "has-id";
     const withId = document.createElement("h2");
-    withId.id = "has-id";
     withId.textContent = "Has ID";
+    sectionWithId.appendChild(withId);
 
     const noId = document.createElement("h2");
     noId.textContent = "No ID";
 
-    container.appendChild(withId);
+    container.appendChild(sectionWithId);
     container.appendChild(noId);
 
     act(() => {
@@ -65,15 +69,17 @@ describe("useTableOfContents", () => {
   it("strips the anchor added by rehype-autolink-headings", () => {
     const { result } = renderHook(() => useTableOfContents());
     const container = document.createElement("div");
+    const section = document.createElement("section");
+    section.id = "my-heading";
     const h2 = document.createElement("h2");
-    h2.id = "my-heading";
 
     // rehype-autolink-headings prepends or appends an <a> element
     const anchor = document.createElement("a");
     anchor.textContent = "#";
     h2.appendChild(anchor);
     h2.appendChild(document.createTextNode("My Heading"));
-    container.appendChild(h2);
+    section.appendChild(h2);
+    container.appendChild(section);
 
     act(() => {
       result.current[1](container);
@@ -86,7 +92,8 @@ describe("useTableOfContents", () => {
   it("returns empty array for a container with no H2/H3 headings", () => {
     const { result } = renderHook(() => useTableOfContents());
     const container = document.createElement("div");
-    container.innerHTML = "<p>Just a paragraph</p><h4 id='h4'>H4 heading</h4>";
+    container.innerHTML =
+      "<p>Just a paragraph</p><section id='h4'><h4>H4 heading</h4></section>";
 
     act(() => {
       result.current[1](container);

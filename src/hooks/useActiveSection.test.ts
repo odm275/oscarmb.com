@@ -51,9 +51,15 @@ describe("useActiveSection", () => {
   beforeEach(() => {
     setupIntersectionObserverMock();
     document.body.innerHTML = `
-      <h2 id="heading-1">Heading 1</h2>
-      <h2 id="heading-2">Heading 2</h2>
-      <h3 id="heading-3">Heading 3</h3>
+      <section id="heading-1">
+        <h2>Heading 1</h2>
+      </section>
+      <section id="heading-2">
+        <h2>Heading 2</h2>
+        <section id="heading-3">
+          <h3>Heading 3</h3>
+        </section>
+      </section>
     `;
   });
 

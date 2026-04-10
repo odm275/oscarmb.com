@@ -1,6 +1,7 @@
 import { defineCollection, defineConfig, s } from "velite";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { rehypeSectionWrap } from "./src/lib/rehype-section-wrap";
 
 const posts = defineCollection({
   name: "Post",
@@ -35,6 +36,6 @@ export default defineConfig({
   },
   collections: { posts },
   mdx: {
-    rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+    rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypeSectionWrap],
   },
 });
