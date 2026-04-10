@@ -1,8 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import * as Sentry from "@sentry/nextjs";
-import { generateEmbedding } from "@/lib/embeddings";
-import { formatContext, retrieveContext } from "@/lib/rag";
+import { getContextForQuery } from "@/lib/rag";
 
 // Uses default Node runtime for Google AI SDK
 
@@ -58,12 +57,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Embed the user's query using Google's gemini-embedding-001
-    const embedding = await generateEmbedding(messageText);
-
-    // Retrieve relevant context from pre-generated embeddings
-    const relevantChunks = retrieveContext(embedding);
-    const context = formatContext(relevantChunks);
+    const { context } = await getContextForQuery(messageText);
 
     // Check if Google API key is configured
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
