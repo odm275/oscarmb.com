@@ -1,0 +1,20 @@
+{
+  "skills": [
+    {
+      "category": "Languages",
+      "items": "TypeScript, JavaScript (Node.js), HTML5, CSS"
+    },
+    {
+      "category": "Frontend",
+      "items": "React, Next.js, React Query, Stencil.js, Redux, Tailwind, A11y"
+    },
+    {
+      "category": "Backend",
+      "items": "Express.js, tRPC, GraphQL, REST APIs, PostgreSQL, Ruby on Rails"
+    },
+    {
+      "category": "Tools",
+      "items": "Docker, Google Cloud, Splunk, Git, Jest, MSW, Playwright, Biome, Github, Charles Proxy, Claude Code, Cursor, Storybook, LLMs, AI workflows"
+    }
+  ]
+}

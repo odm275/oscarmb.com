@@ -194,19 +194,19 @@ function extractNavigationData(): ContentChunk[] {
 function extractResumeContent(): ContentChunk[] {
   const name = "Oscar Mejia";
 
-  const skills = {
-    languages: "TypeScript, JavaScript (Node.js), HTML5, CSS",
-    frontend: "React, Next.js, React Query, Stencil.js, Redux, Tailwind, A11y",
-    backend: "Express, tRPC, GraphQL, REST APIs, PostgreSQL, Ruby on Rails",
-    tools:
-      "Docker, Google Cloud, Splunk, Git, Jest, MSW, Playwright, Biome, Git, Github, Docker, Charles Proxy, Claude Code, Cursor, Storybook",
-  };
+  const skillsFilePath = path.join(process.cwd(), "src/data/skills.json");
+  const skillsData = JSON.parse(fs.readFileSync(skillsFilePath, "utf-8"));
+  const skillsContent = skillsData.skills
+    .map(
+      (s: { category: string; items: string }) => `${s.category}: ${s.items}`,
+    )
+    .join(". ");
 
   return [
     {
       slug: "resume:skills",
       title: "Resume - Technical Skills",
-      content: `${name}'s technical skills from resume. Programming Languages: ${skills.languages}. Frontend technologies: ${skills.frontend}. Backend technologies: ${skills.backend}. Tools and platforms: ${skills.tools}. These are the skills listed on my official resume.`,
+      content: `${name}'s technical skills from resume. ${skillsContent}. These are the skills listed on my official resume.`,
     },
     {
       slug: "resume:overview",

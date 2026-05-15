@@ -1,3 +1,4 @@
+import skillsData from "@/data/skills.json";
 import socialsData from "@/data/socials.json";
 import { socialSchema, type Experience } from "@/lib/schemas";
 
@@ -18,25 +19,7 @@ const CONTACT = {
   website: { label: "oscarmb.com", href: "https://oscarmb.com" },
 };
 
-const SKILLS = [
-  {
-    category: "Languages",
-    items: "TypeScript, JavaScript (Node.js), HTML5, CSS",
-  },
-  {
-    category: "Frontend",
-    items: "React, Next.js, React Query, Stencil.js, Redux, Tailwind, A11y",
-  },
-  {
-    category: "Backend",
-    items: "Express.js, tRPC, GraphQL, REST APIs, PostgreSQL, Ruby on Rails",
-  },
-  {
-    category: "Tools",
-    items:
-      "Docker, Google Cloud, Splunk, Git, Jest, MSW, Playwright, Biome, Git, Github, Docker, Charles Proxy, Claude Code, Cursor, Storybook",
-  },
-];
+const SKILLS = skillsData.skills;
 
 const DEFAULT_LOCATION = "Houston, TX";
 
