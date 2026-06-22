@@ -1,6 +1,63 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
 
 @layer base {
   :root {
@@ -82,13 +139,13 @@
     @apply bg-background text-foreground;
   }
   .title {
-    @apply font-serif text-5xl tracking-wide decoration-border/75 decoration-2;
+    @apply decoration-border/75 font-serif text-5xl tracking-wide decoration-2;
   }
   .link {
-    @apply text-muted-foreground transition-colors hover:text-foreground;
+    @apply text-muted-foreground hover:text-foreground transition-colors;
   }
   .prose pre {
-    @apply overflow-x-auto rounded-lg bg-accent px-5 py-4 text-sm;
+    @apply bg-accent overflow-x-auto rounded-lg px-5 py-4 text-sm;
   }
   .prose pre code {
     @apply p-0 leading-[1.75];
@@ -100,7 +157,7 @@
     @apply font-medium;
   }
   .input-error {
-    @apply ml-1 mt-2 text-sm text-rose-400;
+    @apply mt-2 ml-1 text-sm text-rose-400;
   }
   section[id] {
     scroll-margin-top: 6rem;
@@ -144,5 +201,27 @@
 
   .prose table {
     @apply border-separate border-spacing-0 overflow-hidden rounded-lg border;
+  }
+}
+
+@layer utilities {
+  .ios-prevent-zoom {
+    @media (max-width: 639px) {
+      font-size: 16px !important;
+    }
+
+    @media (min-width: 640px) {
+      font-size: 0.875rem !important;
+    }
+  }
+
+  .touch-target {
+    min-height: 36px;
+    min-width: 36px;
+
+    @media (min-width: 640px) {
+      min-height: 40px;
+      min-width: 40px;
+    }
   }
 }

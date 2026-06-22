@@ -19,7 +19,7 @@ Check it out here: **[oscarmb.com](https://oscarmb.com)**
 ## Tech Stack
 
 - Next.js 14 (App Router)
-- Tailwind CSS + Shadcn UI
+- Tailwind CSS v4 + Shadcn UI
 - AI SDK (OpenAI + Google/Gemini)
 - Velite + next-mdx-remote (MDX processing)
 - Google gemini-embedding-001 (embeddings)
@@ -76,6 +76,12 @@ This repo includes a deployment failure guardian for Vercel production deploymen
 - `pnpm test:deploy-agent` - run deploy-agent unit tests.
 
 Operational details are documented in `docs/deploy-guardian.md`.
+
+## Tailwind Notes
+
+- Tailwind is configured with the v4 CSS-first approach in `src/app/globals.css`.
+- PostCSS uses `@tailwindcss/postcss` in `postcss.config.mjs`.
+- Migration details and token/animation examples: `docs/tailwind-v4-migration.md`.
 
 ## License
 
