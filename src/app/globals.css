@@ -39,6 +39,15 @@
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  --hand-wave-delay: 0.5s;
+  --hand-wave-repetitions: 6;
+
+  --animate-hand-wave:
+    hand-motion ease-in-out 0.4s var(--hand-wave-delay)
+      var(--hand-wave-repetitions) alternate forwards,
+    hand-rotation 0.4s var(--hand-wave-delay) ease-in-out
+      var(--hand-wave-repetitions) alternate forwards;
 }
 
 @keyframes accordion-down {
@@ -56,6 +65,19 @@
   }
   to {
     height: 0;
+  }
+}
+
+/* Hand Animation Wave */
+@keyframes hand-rotation {
+  to {
+    transform: rotate(50deg);
+  }
+}
+
+@keyframes hand-motion {
+  to {
+    transform: translate(5px, -4px);
   }
 }
 

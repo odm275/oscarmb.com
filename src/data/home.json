@@ -1,6 +1,6 @@
 {
   "introduction": {
-    "greeting": "Hey, Oscar here. 👋",
+    "greeting": "Hey, Oscar here.",
     "description": "Crafting web solutions from scratch to production at your service.",
     "chatPrompt": "For Q&A, start a chat with Oscar AI",
     "escalation": {

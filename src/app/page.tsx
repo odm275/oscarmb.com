@@ -1,4 +1,5 @@
 import Experience from "@/components/Experience";
+import HandWave from "@/components/HandWave";
 import LinkWithIcon from "@/components/LinkWithIcon";
 import Posts from "@/components/Posts";
 import Projects from "@/components/Projects";
@@ -29,20 +30,20 @@ export default function Home() {
         <SwipeCards className="md:mr-8" />
 
         <div className="flex max-w-[320px] flex-col sm:max-w-full">
-          <h1 className="title text-balance text-4xl sm:text-5xl">
-            {homeContent.introduction.greeting}
+          <h1 className="title text-4xl text-balance sm:text-5xl">
+            <span>{homeContent.introduction.greeting}</span> <HandWave />
           </h1>
 
-          <p className="mt-2 whitespace-nowrap text-sm font-medium sm:text-base">
+          <p className="mt-2 text-sm font-medium whitespace-nowrap sm:text-base">
             senior software engineer from Houston, Texas 🇺🇸
           </p>
 
-          <p className="mt-4 max-w-sm text-balance text-sm sm:text-base">
+          <p className="mt-4 max-w-sm text-sm text-balance sm:text-base">
             {homeContent.introduction.description}
           </p>
 
           <div className="mt-6 flex items-center gap-1">
-            <p className="text-balance text-sm font-semibold sm:text-base">
+            <p className="text-sm font-semibold text-balance sm:text-base">
               {homeContent.introduction.chatPrompt}
             </p>
             <ArrowDownRight className="hidden size-5 animate-bounce sm:block" />
