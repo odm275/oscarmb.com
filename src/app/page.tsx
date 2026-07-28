@@ -1,5 +1,6 @@
 import Experience from "@/components/Experience";
 import HandWave from "@/components/HandWave";
+import HomeChatPrompt from "@/components/HomeChatPrompt";
 import LinkWithIcon from "@/components/LinkWithIcon";
 import Posts from "@/components/Posts";
 import Projects from "@/components/Projects";
@@ -9,12 +10,7 @@ import { Button } from "@/components/ui/Button";
 import homeContent from "@/data/home.json";
 import projectsData from "@/data/projects.json";
 import { getPosts } from "@/lib/posts";
-import {
-  ArrowDown,
-  ArrowDownRight,
-  ArrowRightIcon,
-  FileDown,
-} from "lucide-react";
+import { ArrowRightIcon, FileDown } from "lucide-react";
 import Link from "next/link";
 
 const LIMIT = 2; // max show 2
@@ -46,8 +42,7 @@ export default function Home() {
             <p className="text-sm font-semibold text-balance sm:text-base">
               {homeContent.introduction.chatPrompt}
             </p>
-            <ArrowDownRight className="hidden size-5 animate-bounce sm:block" />
-            <ArrowDown className="block size-5 animate-bounce sm:hidden" />
+            <HomeChatPrompt />
           </div>
 
           <p className="mt-1 text-xs font-light">

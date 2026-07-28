@@ -19,7 +19,7 @@ export default function Chat() {
 
   const isLoading = status === "streaming" || status === "submitted";
 
-  const { isVisible } = useChatbot();
+  const { isVisible, openValue, setOpenValue } = useChatbot();
 
   const handleSubmit = (message: string) => {
     sendMessage({ text: message });
@@ -27,10 +27,16 @@ export default function Chat() {
 
   return (
     isVisible && (
-      <Accordion type="single" collapsible className="relative z-40 flex">
+      <Accordion
+        type="single"
+        collapsible
+        value={openValue}
+        onValueChange={setOpenValue}
+        className="relative z-40 flex"
+      >
         <AccordionItem
           value="item-1"
-          className="fixed bottom-4 right-4 w-[320px] rounded-lg border bg-background shadow-lg shadow-black/10 sm:bottom-8 sm:right-8 sm:w-96 dark:shadow-black/30"
+          className="bg-background fixed right-4 bottom-4 w-[320px] rounded-lg border shadow-lg shadow-black/10 sm:right-8 sm:bottom-8 sm:w-96 dark:shadow-black/30"
         >
           <AccordionTrigger className="border-b px-6">
             <ChatHeader />
